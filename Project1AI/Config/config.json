@@ -1,0 +1,231 @@
+{
+  "shaders": {
+    "vert": "assets/shaders/vertexShader01.glsl",
+    "frag": "assets/shaders/fragmentShader01.glsl"
+  },
+  "models": [
+    "assets/models/AIGroundTerrain.ply",
+    "assets/models/Sphere_Radius_1_XYZ_n_uv.ply"
+  ],
+  "MeshName": [
+    "ground",
+    "sphere"
+  ],
+  "Textures": [
+    "defaultTex.bmp",
+    "PlasmaRing.bmp",
+    "blacktex.bmp",
+    "redtex.bmp",
+    "bluetex.bmp",
+    "cyantex.bmp",
+    "greentex.bmp",
+    "yellowtex.bmp",
+    "violettex.bmp"
+  ],
+  "GameObjects": [
+    {
+      "meshname": "ground",
+      "friendlyname": "ground",
+      "position": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": 2.0,
+      "objectcolor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 1.0
+      },
+      "debugcolor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 1.0
+      },
+      "tex": [ "blacktex.bmp", "", "", "" ],
+      "texratio": [ 1, 0, 0, 0 ]
+    },
+    {
+      "meshname": "ground",
+      "friendlyname": "wall1",
+      "position": {
+        "x": 256.0,
+        "y": 100.0,
+        "z": 0.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 90.0
+      },
+      "scale": 1.0,
+      "objectcolor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 1.0
+      },
+      "debugcolor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 1.0
+      },
+      "tex": [ "defaultTex.bmp", "", "", "" ],
+      "texratio": [ 1, 0, 0, 0 ]
+    },
+    {
+      "meshname": "ground",
+      "friendlyname": "wall2",
+      "position": {
+        "x": -256.0,
+        "y": 100.0,
+        "z": 0.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": -90.0
+      },
+      "scale": 1.0,
+      "objectcolor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 1.0
+      },
+      "debugcolor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 1.0
+      },
+      "tex": [ "defaultTex.bmp", "", "", "" ],
+      "texratio": [ 1, 0, 0, 0 ]
+    },
+    {
+      "meshname": "sphere",
+      "friendlyname": "skybox",
+      "position": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": 7500.0,
+      "objectcolor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 1.0
+      },
+      "debugcolor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 1.0
+      },
+      "tex": [ "defaultTex.bmp", "", "", "" ],
+      "texratio": [ 1, 0, 0, 0 ]
+    },
+    {
+      "meshname": "sphere",
+      "friendlyname": "player",
+      "position": {
+        "x": 0.0,
+        "y": 10.0,
+        "z": 0.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": 3.0,
+      "objectcolor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 1.0
+      },
+      "debugcolor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 1.0
+      },
+      "tex": [ "redtex.bmp", "", "", "" ],
+      "texratio": [ 1, 0, 0, 0 ]
+    },
+    {
+      "meshname": "sphere",
+      "friendlyname": "enemy1",
+      "position": {
+        "x": 0.0,
+        "y": 10.0,
+        "z": 10.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": 2.0,
+      "objectcolor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 1.0
+      },
+      "debugcolor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 1.0
+      },
+      "tex": [ "yellowtex.bmp", "", "", "" ],
+      "texratio": [ 1, 0, 0, 0 ]
+    },
+    {
+      "meshname": "sphere",
+      "friendlyname": "enemy2",
+      "position": {
+        "x": 10.0,
+        "y": 10.0,
+        "z": 0.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": 2.0,
+      "objectcolor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 1.0
+      },
+      "debugcolor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 1.0
+      },
+      "tex": [ "greentex.bmp", "", "", "" ],
+      "texratio": [ 1, 0, 0, 0 ]
+    }
+  ]
+  
+}

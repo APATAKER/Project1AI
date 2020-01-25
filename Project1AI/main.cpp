@@ -1,19 +1,21 @@
-#include"commonHeaders.h"
-#include"ProjectStuff/openGLStuff.h"
-#include"ModelLoading/cModelLoader.h"
-#include"shader/cShaderManager.h"
-#include"VAO/cVAOManager.h"
-#include"Textures/cBasicTextureManager.h"
-#include"DebugRenderer/cDebugRenderer.h"
-#include"GameObject/cGameObject.h"
-#include"FlyCamera/cFlyCamera.h"
-#include"DeltaTime/cLowPassFilter.h"
+#include "commonHeaders.h"
+#include "ProjectStuff/openGLStuff.h"
+#include "ModelLoading/cModelLoader.h"
+#include "shader/cShaderManager.h"
+#include "VAO/cVAOManager.h"
+#include "Textures/cBasicTextureManager.h"
+#include "DebugRenderer/cDebugRenderer.h"
+#include "GameObject/cGameObject.h"
+#include "FlyCamera/cFlyCamera.h"
+#include "DeltaTime/cLowPassFilter.h"
+#include "JsonLoader/cLoad.h"
 
-cBasicTextureManager* g_pTextureManager = NULL;
-GLFWwindow* window = NULL;
-cDebugRenderer* pDebugRenderer = NULL;
-cFlyCamera* g_pFlyCamera = NULL;
-cLowPassFilter* avgDeltaTimeThingy = NULL;
+
+cBasicTextureManager* g_pTextureManager = nullptr;
+GLFWwindow* window = nullptr;
+cDebugRenderer* g_pDebugRenderer = nullptr;
+cFlyCamera* g_pFlyCamera = nullptr;
+cLowPassFilter* avgDeltaTimeThingy = nullptr;
 
 glm::vec3 LightPosition = glm::vec3(-25.0f, 300.0f, -150.0f);
 float LightConstAtten = 0.0000001f;			
@@ -46,46 +48,57 @@ int main()
 	glGetIntegerv(GL_MINOR_VERSION, &minor);
 	std::cout << "OpenGL version: " << major << "." << minor << std::endl;
 
-	/*cDebugRenderer* pDebugRenderer = new cDebugRenderer();
-	if (!pDebugRenderer->initialize())
+	cDebugRenderer* g_pDebugRenderer = new cDebugRenderer();
+	if (!g_pDebugRenderer->initialize())
 	{
-		std::cout << "Error init on DebugShader: " << pDebugRenderer->getLastError() << std::endl;
-	}*/
+		std::cout << "Error init on DebugShader: " << g_pDebugRenderer->getLastError() << std::endl;
+	}
 
+
+	rapidjson::StringBuffer buffer;
+	rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buffer);
+
+	std::string jsonFilename = "Config/config.json";
+	rapidjson::Document document = cJSONUtility::open_document(jsonFilename);
+
+	
 	///######################## MODEL #### LOADING ##### STARTS ### HERE ##########################################
 	cModelLoader* pTheModelLoader = new cModelLoader();
 
 
-
 	// Models Loaded here
-
-	//std::string MeshFilePath = "config/cMeshFilePaths.txt";
-	//pTheModelLoader->MeshLoader(MeshFilePath, pTheModelLoader);
+	
 	std::string errorString = "";
 
-	cMesh groundMesh;
-	if (pTheModelLoader->LoadModel_Assimp("assets/models/AIGroundTerrain.ply", groundMesh, errorString))
-	{
-		std::cout << "Ground model loaded" << std::endl;
-	}
-	else
-	{
-		std::cout << "\nerror:" << errorString << std::endl;
-	}
+	size_t numModels = document["models"].Size();
 
-	cMesh sphereMesh;
-	pTheModelLoader->LoadPlyModel("assets/models/Sphere_Radius_1_XYZ_n_uv.ply", sphereMesh);
+	std::vector<cMesh> vModelMesh;
+	for(size_t c = 0;c<numModels;c++)
+	{
+		cMesh Mesh;
+		if (pTheModelLoader->LoadModel_Assimp(document["models"][c].GetString(), Mesh, errorString))
+		{
+			std::cout << document["models"][c].GetString()<< " model loaded" << std::endl;
+			vModelMesh.push_back(Mesh);
+		}
+		else
+		{
+			std::cout << "\nerror:" << errorString << std::endl;
+		}
+	}
 
 	///######################## MODEL #### LOADING ##### ENDS ### HERE ##########################################
 
 	///######################## SHADER #### LOADING ## STARTS ### HERE #############################################
 	cShaderManager* pTheShaderManager = new cShaderManager();
 
+	//std::cout <<  << std::endl;
+
 	cShaderManager::cShader vertexShad;
-	vertexShad.fileName = "assets/shaders/vertexShader01.glsl";
+	vertexShad.fileName = document["shaders"]["vert"].GetString();
 
 	cShaderManager::cShader fragShader;
-	fragShader.fileName = "assets/shaders/fragmentShader01.glsl";
+	fragShader.fileName = document["shaders"]["frag"].GetString();
 
 	if (!pTheShaderManager->createProgramFromFile("SimpleShader", vertexShad, fragShader))
 	{
@@ -103,32 +116,29 @@ int main()
 	cVAOManager* pTheVAOManager = cVAOManager::getInstance();
 	// Singleton done Here
 
-	sModelDrawInfo groundDrawInfo;
-	pTheVAOManager->LoadModelIntoVAO("ground", groundMesh, groundDrawInfo, shaderProgID);
 
-	sModelDrawInfo sphereMeshInfo;
-	pTheVAOManager->LoadModelIntoVAO("sphere",
-		sphereMesh,		// Sphere mesh info
-		sphereMeshInfo,
-		shaderProgID);
-
+	for(size_t c = 0;c<numModels;c++)
+	{
+		sModelDrawInfo drawInfo;
+		pTheVAOManager->LoadModelIntoVAO(document["MeshName"][c].GetString(), vModelMesh[c], drawInfo, shaderProgID);
+	}
 
 
 	//##### MODELS ### LOADING ### INTO ### VERTEX ### ARRAY ### OBJECT #### (DATA PUSHED INTO SHADER CODE PART)###########
 
+	
 	// Loading Textures
 
 	::g_pTextureManager = new cBasicTextureManager();
 	::g_pTextureManager->SetBasePath("assets/textures");
-
 	// Normal Textures
-	if (!::g_pTextureManager->Create2DTextureFromBMPFile("defaultTex.bmp", true))
+	size_t numTex = document["Textures"].Size();
+	for(size_t c=0;c<numTex;c++)
 	{
-		std::cout << "\nDidn't load texture" << std::endl;
-	}
-	if (!::g_pTextureManager->Create2DTextureFromBMPFile("PlasmaRing.bmp", true))
-	{
-		std::cout << "\nDidn't load texture" << std::endl;
+		if (!::g_pTextureManager->Create2DTextureFromBMPFile(document["Textures"][c].GetString(), true))
+		{
+			std::cout << "\nDidn't load texture" << std::endl;
+		}
 	}
 	// CubeMap Texture
 	::g_pTextureManager->SetBasePath("assets/textures/cubemaps/");
@@ -137,97 +147,48 @@ int main()
 		"SpaceBox_right1_posX.bmp", "SpaceBox_left2_negX.bmp",
 		"SpaceBox_top3_posY.bmp", "SpaceBox_bottom4_negY.bmp",
 		"SpaceBox_front5_posZ.bmp", "SpaceBox_back6_negZ.bmp", true, errorString))
-	{
 		std::cout << "\nSpace skybox loaded" << std::endl;
-	}
 	else
-	{
 		std::cout << "\nskybox error: " << errorString << std::endl;
-	}
-
+	
 	// Loading Textures
 
 
-
-
-
-
 	//##### GAME ### OBJECTS ### TO ### CREATED ### HERE ##################################################################
 
-	/*g_vec_pGameObjects= ReadGameObjectsData("config/scene.txt");*/
-	
-	
-	cGameObject* pGround = new cGameObject();
-	pGround->meshName = "ground";
-	pGround->friendlyName = "ground";	// Friendly name
-	pGround->positionXYZ = glm::vec3(0.0f, 0.0f, 0.0f);
-	pGround->setOrientation(glm::vec3(0.0f, 0.0f, 0.0f));
-	pGround->scale = 1.0f;
-	pGround->objectColourRGBA = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	pGround->debugColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	// Add a debug renderer to this object
-	pGround->setDebugRenderer(pDebugRenderer);
-	g_vec_pGameObjects.push_back(pGround);
-
-	cGameObject* pwall1 = new cGameObject();
-	pwall1->meshName = "ground";
-	pwall1->friendlyName = "wall1";	// Friendly name
-	pwall1->positionXYZ = glm::vec3(128.0f, 100.0f, 0.0f);
-	pwall1->setOrientation(glm::vec3(0.0f, 0.0f, 90.0f));
-	pwall1->scale = 1.0f;
-	pwall1->objectColourRGBA = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	pwall1->debugColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	// Add a debug renderer to this object
-	pwall1->setDebugRenderer(pDebugRenderer);
-	g_vec_pGameObjects.push_back(pwall1);
-
-	cGameObject* pwall2 = new cGameObject();
-	pwall2->meshName = "ground";
-	pwall2->friendlyName = "wall2";	// Friendly name
-	pwall2->positionXYZ = glm::vec3(-128.0f, 100.0f, 0.0f);
-	pwall2->setOrientation(glm::vec3(0.0f, 0.0f, -90.0f));
-	pwall2->scale = 1.0f;
-	pwall2->objectColourRGBA = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	pwall2->debugColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	// Add a debug renderer to this object
-	pwall2->setDebugRenderer(pDebugRenderer);
-	g_vec_pGameObjects.push_back(pwall2);
-	
-	// "SkyBox"
-	cGameObject* pSkyBoxSphere = new cGameObject();
-	pSkyBoxSphere->meshName = "sphere";
-	pSkyBoxSphere->friendlyName = "skybox";
-	pSkyBoxSphere->positionXYZ = glm::vec3(0.0f, 0.0f, 0.0f);
-	pSkyBoxSphere->scale = 7500.0f;		// 1.0 to 10,000,000
-	//pSkyBoxSphere->isWireframe = true;
-	//pSkyBoxSphere->debugColour = glm::vec4( 0.0f, 1.0f, 0.0f, 1.0f );
-	pSkyBoxSphere->textures[0] = "";
-	pSkyBoxSphere->textureRatio[0] = 1.0f;
-	pSkyBoxSphere->physicsShapeType = SPHERE;
-	pSkyBoxSphere->inverseMass = 0.0f;
-	g_vec_pGameObjects.push_back(pSkyBoxSphere);
-
-	//Player
-	cGameObject* pPlayer = new cGameObject();
-	pPlayer->meshName = "sphere";
-	pPlayer->friendlyName = "player";
-	pPlayer->positionXYZ = glm::vec3(0.0f, 10.0f, 0.0f);
-	pPlayer->scale = 3.0f;
-	pPlayer->textures[0] = "PlasmaRing.bmp";
-	pPlayer->textureRatio[0] = 1.0f;
-	g_vec_pGameObjects.push_back(pPlayer);
-
-	//Enemy
-	cGameObject* pEnemy1 = new cGameObject();
-	pEnemy1->meshName = "sphere";
-	pEnemy1->friendlyName = "enemy1";
-	pEnemy1->positionXYZ = glm::vec3(0.0f, 10.0f, 10.0f);
-	pEnemy1->scale = 2.0f;
-	g_vec_pGameObjects.push_back(pEnemy1);
-
+	size_t numGameObjects = document["GameObjects"].Size();
+	for(size_t c=0;c<numGameObjects;c++)
+	{
+		cGameObject* gameobject = new cGameObject();
+		rapidjson::Value& jgameobj = document["GameObjects"][c];
+		
+		gameobject->meshName = jgameobj["meshname"].GetString();
+		gameobject->friendlyName = jgameobj["friendlyname"].GetString();
+		gameobject->positionXYZ = glm::vec3(jgameobj["position"]["x"].GetFloat(),
+											jgameobj["position"]["y"].GetFloat(),
+											jgameobj["position"]["z"].GetFloat());
+		gameobject->setOrientation(glm::vec3(
+											jgameobj["rotation"]["x"].GetFloat(),
+											jgameobj["rotation"]["y"].GetFloat(),
+											jgameobj["rotation"]["z"].GetFloat()));
+		gameobject->scale = jgameobj["scale"].GetFloat();
+		gameobject->objectColourRGBA = glm::vec4(jgameobj["objectcolor"]["r"].GetFloat(),
+												jgameobj["objectcolor"]["g"].GetFloat(),
+												jgameobj["objectcolor"]["b"].GetFloat(),
+												jgameobj["objectcolor"]["a"].GetFloat());
+		gameobject->debugColour = glm::vec4(jgameobj["debugcolor"]["r"].GetFloat(),
+											jgameobj["debugcolor"]["g"].GetFloat(),
+											jgameobj["debugcolor"]["b"].GetFloat(),
+											jgameobj["debugcolor"]["a"].GetFloat());
+		for(int i=0;i<jgameobj["tex"].Size();i++)
+		{
+			gameobject->textures[i] = jgameobj["tex"][i].GetString();
+			gameobject->textureRatio[i] = jgameobj["texratio"][i].GetFloat();
+		}
+		g_vec_pGameObjects.push_back(gameobject);
+	}
 
 	//##### GAME ### OBJECTS ### TO ### CREATED ### HERE ##################################################################
-	//std::cout << "Hello World!!" << std::endl;
 
 
 	// Camera Created here
@@ -371,6 +332,9 @@ int main()
 	delete pTheShaderManager; 
 	delete pTheVAOManager;
 	delete g_pFlyCamera;
+	delete g_pDebugRenderer;
+	for (int i = 0; i < g_vec_pGameObjects.size(); i++)
+		delete g_vec_pGameObjects[i];
 
 	exit(EXIT_SUCCESS);
 

@@ -159,10 +159,13 @@
     <ClCompile Include="FlyCamera\cFlyCamera.cpp" />
     <ClCompile Include="GameObject\cGameObject.cpp" />
     <ClCompile Include="glad.c" />
+    <ClCompile Include="JsonLoader\cLoad.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ModelLoading\cMesh.cpp" />
     <ClCompile Include="ModelLoading\cModelLoader.cpp" />
     <ClCompile Include="ModelLoading\cModelLoader_assimp.cpp" />
+    <ClCompile Include="Physics\Physics.cpp" />
+    <ClCompile Include="Physics\PhysicsClosestTriangle.cpp" />
     <ClCompile Include="ProjectStuff\openGLStuff.cpp" />
     <ClCompile Include="shader\cShader.cpp" />
     <ClCompile Include="shader\cShaderManager.cpp" />
@@ -183,8 +186,10 @@
     <ClInclude Include="FlyCamera\cFlyCamera.h" />
     <ClInclude Include="FlyCamera\iCamera.h" />
     <ClInclude Include="GameObject\cGameObject.h" />
+    <ClInclude Include="JsonLoader\cLoad.h" />
     <ClInclude Include="ModelLoading\cMesh.h" />
     <ClInclude Include="ModelLoading\cModelLoader.h" />
+    <ClInclude Include="Physics\Physics.h" />
     <ClInclude Include="ProjectStuff\openGLStuff.h" />
     <ClInclude Include="shader\cShaderManager.h" />
     <ClInclude Include="Textures\C24BitBMPpixel.h" />

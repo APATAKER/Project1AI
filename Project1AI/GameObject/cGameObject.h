@@ -2,12 +2,12 @@
 #define _cGameObject_HG_
 
 #include <glm/glm.hpp>
-#include <glm/vec3.hpp>
 #include <glm/gtx/quaternion.hpp>		// The quaternion class
 #include <string>
 
 // NOTE: We are including the INTERFACE, not the actual renderer
 #include "../DebugRenderer/iDebugRenderer.h"
+#include "../ModelLoading/cMesh.h"
 
 enum eShapeTypes
 {
@@ -61,6 +61,8 @@ public:
 	                                // 4th value (a or w) is the "power"
 	                                // 1.0 to 10,000.0f 
 
+
+	cMesh GameObjectMesh;
 
 	// Add some physics things
 	glm::vec3 velocity;

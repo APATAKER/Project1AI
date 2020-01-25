@@ -1,11 +1,8 @@
 #include "cVAOManager.h"
 
-#include <glm/vec3.hpp>
-#include <glm/vec4.hpp>
 
 #include <vector>
 
-#include <sstream>
 
 static cVAOManager* instance;
 
