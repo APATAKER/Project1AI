@@ -64,7 +64,7 @@ int main()
 	std::string errorString = "";
 
 	cMesh groundMesh;
-	if (pTheModelLoader->LoadModel_Assimp("assets/models/Terrain_XYZ_n_uv.ply", groundMesh, errorString))
+	if (pTheModelLoader->LoadModel_Assimp("assets/models/AIGroundTerrain.ply", groundMesh, errorString))
 	{
 		std::cout << "Ground model loaded" << std::endl;
 	}
@@ -126,6 +126,10 @@ int main()
 	{
 		std::cout << "\nDidn't load texture" << std::endl;
 	}
+	if (!::g_pTextureManager->Create2DTextureFromBMPFile("PlasmaRing.bmp", true))
+	{
+		std::cout << "\nDidn't load texture" << std::endl;
+	}
 	// CubeMap Texture
 	::g_pTextureManager->SetBasePath("assets/textures/cubemaps/");
 
@@ -157,18 +161,37 @@ int main()
 	pGround->meshName = "ground";
 	pGround->friendlyName = "ground";	// Friendly name
 	pGround->positionXYZ = glm::vec3(0.0f, 0.0f, 0.0f);
-	//	pPirate->rotationXYZ = glm::vec3(0.0f, 0.0f, 0.0f);
 	pGround->setOrientation(glm::vec3(0.0f, 0.0f, 0.0f));
 	pGround->scale = 1.0f;
 	pGround->objectColourRGBA = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	//pGround->debugColour = glm::vec4(1, 1, 1, 1);
-	pGround->inverseMass = 0.0f;
-	pGround->textureRatio[0] = 1.0f;
-	pGround->isWireframe = false;
 	pGround->debugColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	// Add a debug renderer to this object
 	pGround->setDebugRenderer(pDebugRenderer);
 	g_vec_pGameObjects.push_back(pGround);
+
+	cGameObject* pwall1 = new cGameObject();
+	pwall1->meshName = "ground";
+	pwall1->friendlyName = "wall1";	// Friendly name
+	pwall1->positionXYZ = glm::vec3(128.0f, 100.0f, 0.0f);
+	pwall1->setOrientation(glm::vec3(0.0f, 0.0f, 90.0f));
+	pwall1->scale = 1.0f;
+	pwall1->objectColourRGBA = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	pwall1->debugColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	// Add a debug renderer to this object
+	pwall1->setDebugRenderer(pDebugRenderer);
+	g_vec_pGameObjects.push_back(pwall1);
+
+	cGameObject* pwall2 = new cGameObject();
+	pwall2->meshName = "ground";
+	pwall2->friendlyName = "wall2";	// Friendly name
+	pwall2->positionXYZ = glm::vec3(-128.0f, 100.0f, 0.0f);
+	pwall2->setOrientation(glm::vec3(0.0f, 0.0f, -90.0f));
+	pwall2->scale = 1.0f;
+	pwall2->objectColourRGBA = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	pwall2->debugColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	// Add a debug renderer to this object
+	pwall2->setDebugRenderer(pDebugRenderer);
+	g_vec_pGameObjects.push_back(pwall2);
 	
 	// "SkyBox"
 	cGameObject* pSkyBoxSphere = new cGameObject();
@@ -184,6 +207,24 @@ int main()
 	pSkyBoxSphere->inverseMass = 0.0f;
 	g_vec_pGameObjects.push_back(pSkyBoxSphere);
 
+	//Player
+	cGameObject* pPlayer = new cGameObject();
+	pPlayer->meshName = "sphere";
+	pPlayer->friendlyName = "player";
+	pPlayer->positionXYZ = glm::vec3(0.0f, 10.0f, 0.0f);
+	pPlayer->scale = 3.0f;
+	pPlayer->textures[0] = "PlasmaRing.bmp";
+	pPlayer->textureRatio[0] = 1.0f;
+	g_vec_pGameObjects.push_back(pPlayer);
+
+	//Enemy
+	cGameObject* pEnemy1 = new cGameObject();
+	pEnemy1->meshName = "sphere";
+	pEnemy1->friendlyName = "enemy1";
+	pEnemy1->positionXYZ = glm::vec3(0.0f, 10.0f, 10.0f);
+	pEnemy1->scale = 2.0f;
+	g_vec_pGameObjects.push_back(pEnemy1);
+
 
 	//##### GAME ### OBJECTS ### TO ### CREATED ### HERE ##################################################################
 	//std::cout << "Hello World!!" << std::endl;
@@ -191,7 +232,7 @@ int main()
 
 	// Camera Created here
 	::g_pFlyCamera = new cFlyCamera();
-	::g_pFlyCamera->eye = glm::vec3(0.0f, 300.0, 100.0);
+	::g_pFlyCamera->eye = glm::vec3(0.0f, 65.0, -340.0);
 	::g_pFlyCamera->movementSpeed = 0.25f;
 	::g_pFlyCamera->movementSpeed = 2.5f;
 	// Camera Created here
