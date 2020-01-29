@@ -7,6 +7,19 @@
 #include <glm/vec3.hpp>
 #include <vector>
 
+struct  State
+{
+	float x;
+	float v;
+};
+struct Derivative
+{
+	float dx;
+	float dv;
+};
+
+
+
 class cPhysics
 {
 public:
@@ -15,6 +28,9 @@ public:
 	// Alias to a type "existing type" "new type name"
 	typedef glm::vec3 Point;
 	typedef glm::vec3 Vector;
+
+	float slowingRadius = 10.0f;
+	float maxVelocity = 50.0f;
 
 	struct Sphere
 	{
@@ -28,6 +44,21 @@ public:
 		glm::vec3 normal;
 	};
 
+	
+	Derivative evaluate(const State& initial,
+		double t,
+		float dt,
+		const Derivative& d);
+
+
+	float acceleration(const State& state, double t);
+	
+
+	void integrate(State& state,
+		double t,
+		float dt);
+	
+	
 
 
 	struct sCollisionInfo
@@ -75,6 +106,8 @@ public:
 	// Takes a mesh in "model space" and converts it into "world space"
 	void CalculateTransformedMesh(cMesh& originalMesh, glm::mat4 matWorld,
 		cMesh& mesh_transformedInWorld);
+
+	void seek(cGameObject* target, cGameObject* aiObj, double deltatime);
 
 
 private:

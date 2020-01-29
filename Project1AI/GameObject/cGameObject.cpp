@@ -3,6 +3,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <sstream>
 
+
+
 cGameObject::cGameObject()
 {
 	this->scale = 1.0f;
@@ -56,7 +58,7 @@ void cGameObject::Update(double deltaTime)
 	//this->positionXYZ += this->velocity * (float)deltaTime;
 	//this->positionXYZ += glm::lerp( glm::vec3(0.0f,0.0f,0.0f), this->velocity, (float)deltaTime );
 
-	glm::quat qChangeThisFrame = glm::slerp( glm::quat( glm::vec3(0.0f,0.0f,0.0f) ),			// no rotation
+	glm::quat qChangeThisFrame = glm::slerp( glm::quat( glm::vec3(0.0f,0.0f,90.0f) ),			// no rotation
 						                     this->m_qRotationalVelocity,		// Full rotation IN ONE SECOND
 				                             (float)deltaTime);	
 

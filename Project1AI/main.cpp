@@ -9,6 +9,7 @@
 #include "FlyCamera/cFlyCamera.h"
 #include "DeltaTime/cLowPassFilter.h"
 #include "JsonLoader/cLoad.h"
+#include "Physics/Physics.h"
 
 
 cBasicTextureManager* g_pTextureManager = nullptr;
@@ -16,7 +17,6 @@ GLFWwindow* window = nullptr;
 cDebugRenderer* g_pDebugRenderer = nullptr;
 cFlyCamera* g_pFlyCamera = nullptr;
 cLowPassFilter* avgDeltaTimeThingy = nullptr;
-
 glm::vec3 LightPosition = glm::vec3(-25.0f, 300.0f, -150.0f);
 float LightConstAtten = 0.0000001f;			
 float LightLinearAtten = 0.00119f;
@@ -37,16 +37,14 @@ glm::mat4 calculateWorldMatrix(cGameObject* pCurrentObject, glm::mat4 matWorld);
 void SetUpTextureBindingsForObject(
 	cGameObject* pCurrentObject,
 	GLint shaderProgID);
+cMesh findMeshByName(std::vector<cMesh> vMesh, std::string Meshname);
+cGameObject* findGameObjectByFriendlyName(std::vector<cGameObject*> vGameObjects, std::string friendlyname);
 
 
 int main()
 {
 	window = creatOpenGL(window);
 
-	GLint major, minor;
-	glGetIntegerv(GL_MAJOR_VERSION, &major);
-	glGetIntegerv(GL_MINOR_VERSION, &minor);
-	std::cout << "OpenGL version: " << major << "." << minor << std::endl;
 
 	cDebugRenderer* g_pDebugRenderer = new cDebugRenderer();
 	if (!g_pDebugRenderer->initialize())
@@ -79,6 +77,7 @@ int main()
 		if (pTheModelLoader->LoadModel_Assimp(document["models"][c].GetString(), Mesh, errorString))
 		{
 			std::cout << document["models"][c].GetString()<< " model loaded" << std::endl;
+			Mesh.meshname = document["MeshName"][c].GetString();
 			vModelMesh.push_back(Mesh);
 		}
 		else
@@ -185,6 +184,10 @@ int main()
 			gameobject->textures[i] = jgameobj["tex"][i].GetString();
 			gameobject->textureRatio[i] = jgameobj["texratio"][i].GetFloat();
 		}
+		gameobject->inverseMass = jgameobj["inversemass"].GetFloat();
+		gameobject->physicsShapeType = (eShapeTypes)jgameobj["physicsshapetype"].GetInt();
+		gameobject->GameObjectMesh = findMeshByName(vModelMesh, gameobject->meshName);
+		gameobject->SPHERE_radius = jgameobj["sphereRadius"].GetFloat();
 		g_vec_pGameObjects.push_back(gameobject);
 	}
 
@@ -208,6 +211,12 @@ int main()
 	// Get the initial time
 	double lastTime = glfwGetTime();
 	// Calculating DeltaTime
+
+
+	// start Physics
+	cPhysics* pPhysics = new cPhysics();
+	glm::vec3 closestPoint = glm::vec3(0.0f, 0.0f, 0.0f);
+	cPhysics::sPhysicsTriangle closestTriangle;
 
 
 	
@@ -317,6 +326,17 @@ int main()
 				shaderProgID, pTheVAOManager);
 
 		}//for (int index...
+
+		
+		//Physics implementation
+
+		pPhysics->IntegrationStep(g_vec_pGameObjects, deltaTime);		
+		pPhysics->TestForCollisions(g_vec_pGameObjects);			
+		pPhysics->CheckIfCrossedEndBound(g_vec_pGameObjects);
+		pPhysics->seek(g_vec_pGameObjects[4], g_vec_pGameObjects[5], deltaTime);
+		//pPhysics->seek(g_vec_pGameObjects[4], g_vec_pGameObjects[6], deltaTime);
+
+		//Physics implementation		
 
 
 
@@ -656,4 +676,22 @@ glm::mat4 calculateWorldMatrix(cGameObject* pCurrentObject, glm::mat4 matWorld)
 
 
 	return matWorld;
+}
+
+cMesh findMeshByName(std::vector<cMesh> vMesh,std::string Meshname)
+{
+	for(int i=0;i<vMesh.size();i++)
+	{
+		if (vMesh[i].meshname == Meshname)
+			return  vMesh[i];
+	}
+}
+
+cGameObject* findGameObjectByFriendlyName(std::vector<cGameObject*> vGameObjects,std::string friendlyname)
+{
+	for(int i =0;i<vGameObjects.size();i++)
+	{
+		if (vGameObjects[i]->friendlyName == friendlyname)
+			return vGameObjects[i];
+	}
 }

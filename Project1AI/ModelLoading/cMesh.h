@@ -4,6 +4,7 @@
 #include <vector>		// "smart array"
 #include <glm/glm.hpp>
 #include <glm/vec3.hpp>
+#include <string>
 
 // This structure matches the file, so that our life is
 //   simpler and happier, and we all get along.
@@ -33,6 +34,7 @@ struct sPlyTriangle
 class cMesh
 {
 public:
+	std::string meshname;
 	cMesh() {};			// Empty c'tor
 	~cMesh() {};		// Empty d'tor
 	// Store the vertices

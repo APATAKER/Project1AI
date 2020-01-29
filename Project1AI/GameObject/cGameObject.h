@@ -33,11 +33,16 @@ public:
 
 private:
 	glm::quat m_qRotation;					// Orientation as a quaternion
+	glm::vec3 m_at;
+	glm::vec3 m_up;
 
+	glm::vec3 intialFront;
+	glm::vec3 initalUp;
+	
 public:
 	glm::quat getQOrientation(void);
 	glm::quat m_qRotationalVelocity;		// change over time in rotation
-	// updates rotation
+	// updates rotation 
 	void Update(double deltaTime);
 
 	// Overwrite the orientation

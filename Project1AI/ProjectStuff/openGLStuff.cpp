@@ -1,5 +1,6 @@
 #include"openGLStuff.h"
 #include"../FlyCamera/cFlyCamera.h"
+#include "../GameObject/cGameObject.h"
 
 bool g_MouseIsInsideWindow = false;
 bool g_MouseLeftButtonIsDown = false;
@@ -13,6 +14,11 @@ bool isShiftDown(GLFWwindow* window);
 bool isCtrlDown(GLFWwindow* window);
 bool isAltDown(GLFWwindow* window);
 bool areAllModifiersUp(GLFWwindow* window);
+
+extern std::vector<cGameObject*> g_vec_pGameObjects;
+extern cGameObject* findGameObjectByFriendlyName(std::vector<cGameObject*> vGameObjects, std::string friendlyname);
+
+const float MOVESPEED = 10.0f;
 
 
 // openGLfunc
@@ -52,6 +58,28 @@ GLFWwindow* creatOpenGL(GLFWwindow* win)
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+	cGameObject* player = findGameObjectByFriendlyName(g_vec_pGameObjects, "player");
+
+	if(isOnlyCtrlKeyDown(mods))
+	{
+		if(key == GLFW_KEY_W && action == GLFW_PRESS)
+		{
+			player->velocity.z += MOVESPEED;
+		}
+		if(key == GLFW_KEY_S && action == GLFW_PRESS)
+		{
+			player->velocity.z -= MOVESPEED;
+		}
+		if (key == GLFW_KEY_D && action == GLFW_PRESS)
+		{
+			player->velocity.x -= MOVESPEED;
+		}
+		if (key == GLFW_KEY_A && action == GLFW_PRESS)
+		{
+			player->velocity.x += MOVESPEED;
+		}
+	}
+	
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GLFW_TRUE);
 }

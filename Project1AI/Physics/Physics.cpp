@@ -3,9 +3,48 @@
 
 cPhysics::cPhysics()
 {
+	//this->m_Gravity = glm::vec3(0.0f, 0.0f, 0.0f);
 	this->m_Gravity = glm::vec3(0.0f, -9.81f, 0.0f);
 	//this->m_Gravity = glm::vec3(0.0f, -1.0f, 0.0f);
 	return;
+}
+
+Derivative cPhysics::evaluate(const State& initial, double t, float dt, const Derivative& d)
+{
+	State state;
+	state.x = initial.x + d.dx * dt;
+	state.v = initial.v + d.dv * dt;
+
+	Derivative output;
+	output.dx = state.v;
+	output.dv = acceleration(state, t + dt);
+	return output;
+}
+
+float cPhysics::acceleration(const State& state, double t)
+{
+	const float k = 15.0f;
+	const float b = 0.1f;
+	return -k * state.x - b * state.v;
+}
+
+void cPhysics::integrate(State& state, double t, float dt)
+{
+	Derivative a, b, c, d;
+
+	a = evaluate(state, t, 0.0f, Derivative());
+	b = evaluate(state, t, dt * 0.5f, a);
+	c = evaluate(state, t, dt * 0.5f, b);
+	d = evaluate(state, t, dt, c);
+
+	float dxdt = 1.0f / 6.0f *
+		(a.dx + 2.0f * (b.dx + c.dx) + d.dx);
+
+	float dvdt = 1.0f / 6.0f *
+		(a.dv + 2.0f * (b.dv + c.dv) + d.dv);
+
+	state.x = state.x + dxdt * dt;
+	state.v = state.v + dvdt * dt;
 }
 
 
@@ -21,7 +60,7 @@ glm::vec3 cPhysics::getGravity(void)
 }
 
 
-void cPhysics::IntegrationStep(std::vector<cGameObject*>& vec_pGameObjects, float deltaTime)		//Question 1
+void cPhysics::IntegrationStep(std::vector<cGameObject*>& vec_pGameObjects, float deltaTime)		
 {
 
 
@@ -38,7 +77,7 @@ void cPhysics::IntegrationStep(std::vector<cGameObject*>& vec_pGameObjects, floa
 			//NewVelocty += Velocity + ( Ax * DeltaTime )
 
 			// 
-			pCurObj->accel = getGravity();
+			pCurObj->accel = glm::vec3(0.0f)/*getGravity()*/;
 
 
 			pCurObj->velocity.x += pCurObj->accel.x * deltaTime;
@@ -150,29 +189,37 @@ void cPhysics::GetClosestTrianglesToSphere(cGameObject& testSphere, float distan
 
 }
 
-void cPhysics::CheckIfCrossedEndBound(std::vector<cGameObject*>& vec_pGameObjects)		//Question 6
+void cPhysics::CheckIfCrossedEndBound(std::vector<cGameObject*>& vec_pGameObjects)		
 {
 	float randX = randInRange<float>(-50.0f, 50.0f);
-	float randY = randInRange<float>(10.0f, 50.0f);
+	float randY = randInRange<float>(5.0f, 10.0f);
 	float randZ = randInRange<float>(-50.0f, 50.0f);
 
 	for (int index = 0; index != vec_pGameObjects.size(); index++)
 	{
-		if (vec_pGameObjects[index]->positionXYZ.x > 130.0f || vec_pGameObjects[index]->positionXYZ.x < -130.0f)
+		if (vec_pGameObjects[index]->positionXYZ.x > 128.0f || vec_pGameObjects[index]->positionXYZ.x < -128.0f)
 		{
 			vec_pGameObjects[index]->positionXYZ = glm::vec3(randX, randY, randZ);
 			vec_pGameObjects[index]->velocity = glm::vec3(0, 0, 0);
 		}
-		if (vec_pGameObjects[index]->positionXYZ.z > 130.0f || vec_pGameObjects[index]->positionXYZ.z < -130.0f)
+		if (vec_pGameObjects[index]->positionXYZ.z > 128.0f || vec_pGameObjects[index]->positionXYZ.z < -128.0f)
 		{
 			vec_pGameObjects[index]->positionXYZ = glm::vec3(randX, randY, randZ);
 			vec_pGameObjects[index]->velocity = glm::vec3(0, 0, 0);
 		}
+		/*if(index != 0 && index != 1 && index != 2)
+		{
+			if (vec_pGameObjects[index]->positionXYZ.y > 50.0f || vec_pGameObjects[index]->positionXYZ.y < 0.0f)
+			{
+				vec_pGameObjects[index]->positionXYZ = glm::vec3(randX, randY, randZ);
+				vec_pGameObjects[index]->velocity = glm::vec3(0, 0, 0);
+			}
+		}*/
 	}
 }
 
 // Test each object with every other object
-void cPhysics::TestForCollisions(std::vector<cGameObject*>& vec_pGameObjects)			//Question 2 & 3
+void cPhysics::TestForCollisions(std::vector<cGameObject*>& vec_pGameObjects)			
 {
 	// This will store all the collisions in this frame
 	std::vector<sCollisionInfo> vecCollisions;
@@ -207,15 +254,15 @@ void cPhysics::TestForCollisions(std::vector<cGameObject*>& vec_pGameObjects)			
 			else if (pA->physicsShapeType == SPHERE &&
 				pB->physicsShapeType == SPHERE)
 			{
-				if (DoSphereSphereCollisionTest(pA, pB, collisionInfo))			//Question 2
+				if (DoSphereSphereCollisionTest(pA, pB, collisionInfo))			
 				{
 					vecCollisions.push_back(collisionInfo);
 				}
 			}
-			else if (pA->physicsShapeType == SPHERE &&
-				pB->physicsShapeType == MESH)
+			else if ((pA->physicsShapeType == SPHERE &&
+				pB->physicsShapeType == MESH)/*||(pA->physicsShapeType == MESH &&pB->physicsShapeType==SPHERE)*/)
 			{
-				if (DoShphereMeshCollisionTest(pA, pB, collisionInfo))			//Question 3
+				if (DoShphereMeshCollisionTest(pA, pB, collisionInfo))			
 				{
 					vecCollisions.push_back(collisionInfo);
 				}
@@ -261,48 +308,52 @@ bool cPhysics::DoSphereSphereCollisionTest(cGameObject* pA, cGameObject* pB,
 		closestTriangle.verts[1] +
 		closestTriangle.verts[2]) / 3.0f;		// Average
 
+	float distanceBetweenSpheres = glm::length(pA->positionXYZ - pB->positionXYZ);
+	
+	
 	float distance = glm::length(pA->positionXYZ - collisionInfo.closestPoint);
 
-	if (distance <= pA->SPHERE_radius)
+	if (/*distance <= pA->SPHERE_radius*/distanceBetweenSpheres <= (pA->SPHERE_radius +pB->SPHERE_radius))
 	{
 
 		
-		// 1. Calculate vector from centre of sphere to closest point
-		glm::vec3 vecSphereToClosestPoint = collisionInfo.closestPoint - pA->positionXYZ;
-		
-		// 2. Get the length of this vector
-		float centreToContractDistance = glm::length(vecSphereToClosestPoint);
-		
-		// 3. Create a vector from closest point to radius
-		float lengthPositionAdjustment = pA->SPHERE_radius - centreToContractDistance;
-		
-		// 4. Sphere is moving in the direction of the velocity, so 
-		//    we want to move the sphere BACK along this velocity vector
-		glm::vec3 vecDirection = glm::normalize(pA->velocity);
-		
-		glm::vec3 vecPositionAdjust = (-vecDirection) * lengthPositionAdjustment;
-		
-		// 5. Reposition sphere 
-		pA->positionXYZ += (vecPositionAdjust);
-		
-		/*	 Calculate the response vector off the triangle. */
-		glm::vec3 velocityVector = glm::normalize(pA->velocity);
-		
-		// closestTriangle.normal
-		glm::vec3 reflectionVec = glm::reflect(velocityVector, closestTriangle.normal);
-		reflectionVec = glm::normalize(reflectionVec);
-		
-		
-		// Get lenght of the velocity vector
-		float speed = glm::length(pA->velocity);
-		
-		pA->velocity = reflectionVec * speed;
+		//// 1. Calculate vector from centre of sphere to closest point
+		//glm::vec3 vecSphereToClosestPoint = collisionInfo.closestPoint - pA->positionXYZ;
+		//
+		//// 2. Get the length of this vector
+		//float centreToContractDistance = glm::length(vecSphereToClosestPoint);
+		//
+		//// 3. Create a vector from closest point to radius
+		//float lengthPositionAdjustment = pA->SPHERE_radius - centreToContractDistance;
+		//
+		//// 4. Sphere is moving in the direction of the velocity, so 
+		////    we want to move the sphere BACK along this velocity vector
+		//glm::vec3 vecDirection = glm::normalize(pA->velocity);
+		//
+		//glm::vec3 vecPositionAdjust = (-vecDirection) * lengthPositionAdjustment;
+		//
+		//// 5. Reposition sphere 
+		//pA->positionXYZ += (vecPositionAdjust);
+		//
+		///*	 Calculate the response vector off the triangle. */
+		//glm::vec3 velocityVector = glm::normalize(pA->velocity);
+		//
+		//// closestTriangle.normal
+		//glm::vec3 reflectionVec = glm::reflect(velocityVector, closestTriangle.normal);
+		//reflectionVec = glm::normalize(reflectionVec);
+		//
+		//
+		//// Get lenght of the velocity vector
+		//float speed = glm::length(pA->velocity);
+		//
+		//pA->velocity = reflectionVec * speed;
 		////set the position of the spheres to their previous non contact positions to unstick them.
 		//pA->positionXYZ = pA->prevPositionXYZ;
 		//pB->positionXYZ = pB->prevPositionXYZ;
 		//pA->velocity = glm::vec3(v1x * (m1 - m2) / (m1 + m2) + v2x * (2 * m2) / (m1 + m2) + v1y) / 4.0f;
 		//pB->velocity = glm::vec3(v1x * (2 * m1) / (m1 + m2) + v2x * (m2 - m1) / (m1 + m2) + v2y) / 4.0f;
-
+		pA->velocity = glm::vec3(0);
+		pB->velocity = glm::vec3(0);
 
 		
 
@@ -403,4 +454,32 @@ void cPhysics::CalculateTransformedMesh(cMesh& originalMesh, glm::mat4 matWorld,
 
 	return;
 }
+
+void cPhysics::seek(cGameObject* target, cGameObject* aiObj,double deltatime)
+{
+	glm::vec3 desieredVelocity = target->positionXYZ - aiObj->positionXYZ;
+
+	float dist = desieredVelocity.length();
+
+	glm::vec3 direction = glm::normalize(desieredVelocity);
+
+	if(dist < slowingRadius)
+	{
+		desieredVelocity = direction * maxVelocity *(dist/slowingRadius);
+	}
+	else
+	{
+		desieredVelocity = direction* maxVelocity;
+	}
+
+	glm::vec3 steer = desieredVelocity - aiObj->velocity;
+
+	aiObj->velocity += steer * (float)deltatime;
+
+	if(aiObj->velocity.length() > maxVelocity)
+	{
+		aiObj->velocity = normalize(aiObj->velocity) * maxVelocity;
+	}
+	
+} 
 
