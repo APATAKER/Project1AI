@@ -9,42 +9,75 @@ cPhysics::cPhysics()
 	return;
 }
 
-Derivative cPhysics::evaluate(const State& initial, double t, float dt, const Derivative& d)
+Derivative cPhysics::evaluate(const State& initial, glm::vec3 gravity, float dt, const Derivative& d)
 {
 	State state;
-	state.x = initial.x + d.dx * dt;
-	state.v = initial.v + d.dv * dt;
+	state.pos = initial.pos + d.dx * dt;
+	state.vel = initial.vel + d.dv * dt;
 
 	Derivative output;
-	output.dx = state.v;
-	output.dv = acceleration(state, t + dt);
+	output.dx = state.vel;
+	output.dv = gravity;
 	return output;
 }
 
-float cPhysics::acceleration(const State& state, double t)
+glm::vec3 cPhysics::acceleration(const State& state, double t)
 {
 	const float k = 15.0f;
 	const float b = 0.1f;
-	return -k * state.x - b * state.v;
+	glm::vec3 accl;
+	accl.x = -k * state.pos.x - b * state.vel.x;
+	accl.y = -k * state.pos.y - b * state.vel.y;
+	accl.z = -k * state.pos.z - b * state.vel.z;
+	return accl;
 }
 
-void cPhysics::integrate(State& state, double t, float dt)
+void cPhysics::integrate(std::vector<cGameObject*>& vec_pGameObjects, glm::vec3 gravity, float dt)
 {
 	Derivative a, b, c, d;
+	gravity = glm::vec3(0.0);getGravity();
+	for (int i = 0; i < vec_pGameObjects.size(); i++)
+	{
 
-	a = evaluate(state, t, 0.0f, Derivative());
-	b = evaluate(state, t, dt * 0.5f, a);
-	c = evaluate(state, t, dt * 0.5f, b);
-	d = evaluate(state, t, dt, c);
+		cGameObject* curObj = vec_pGameObjects[i];
 
-	float dxdt = 1.0f / 6.0f *
-		(a.dx + 2.0f * (b.dx + c.dx) + d.dx);
+		State state;
+		state.pos = curObj->positionXYZ;
+		state.vel = curObj->velocity;
 
-	float dvdt = 1.0f / 6.0f *
-		(a.dv + 2.0f * (b.dv + c.dv) + d.dv);
+		if(curObj->inverseMass == 1)
+		{
+		a = evaluate(state, gravity, 0.0f, Derivative());
+		b = evaluate(state, gravity, dt * 0.5f, a);
+		c = evaluate(state, gravity, dt * 0.5f, b);
+		d = evaluate(state, gravity, dt, c);
 
-	state.x = state.x + dxdt * dt;
-	state.v = state.v + dvdt * dt;
+		float dxdtX = 1.0f / 6.0f *
+			(a.dx.x + 2.0f * (b.dx.x + c.dx.x) + d.dx.x);
+		float dxdtY = 1.0f / 6.0f *
+			(a.dx.y + 2.0f * (b.dx.y + c.dx.y) + d.dx.y);
+		float dxdtZ = 1.0f / 6.0f *
+			(a.dx.z + 2.0f * (b.dx.z + c.dx.z) + d.dx.z);
+
+		float dvdtX = 1.0f / 6.0f *
+			(a.dv.x + 2.0f * (b.dv.x + c.dv.x) + d.dv.x);
+		float dvdtY = 1.0f / 6.0f *
+			(a.dv.y + 2.0f * (b.dv.y + c.dv.y) + d.dv.y);
+		float dvdtZ = 1.0f / 6.0f *
+			(a.dv.z + 2.0f * (b.dv.z + c.dv.z) + d.dv.z);
+
+		state.pos.x = state.pos.x + dxdtX * dt;
+		state.pos.y = state.pos.y + dxdtY * dt;
+		state.pos.z = state.pos.z + dxdtZ * dt;
+
+		state.vel.x = state.vel.x + dvdtX * dt;
+		state.vel.y = state.vel.y + dvdtY * dt;
+		state.vel.z = state.vel.z + dvdtZ * dt;
+
+		curObj->positionXYZ = state.pos;
+		curObj->velocity = state.vel;
+	}
+	}
 }
 
 
@@ -77,12 +110,11 @@ void cPhysics::IntegrationStep(std::vector<cGameObject*>& vec_pGameObjects, floa
 			//NewVelocty += Velocity + ( Ax * DeltaTime )
 
 			// 
-			pCurObj->accel = glm::vec3(0.0f)/*getGravity()*/;
+			pCurObj->accel = glm::vec3(getGravity());
+			
 
 
-			pCurObj->velocity.x += pCurObj->accel.x * deltaTime;
-			pCurObj->velocity.y += pCurObj->accel.y * deltaTime;
-			pCurObj->velocity.z += pCurObj->accel.z * deltaTime;
+			pCurObj->velocity += pCurObj->accel * deltaTime;
 			//		// Or you can do this...
 			//		CurObj.velocity += CurObj.accel * deltaTime;
 
@@ -197,16 +229,22 @@ void cPhysics::CheckIfCrossedEndBound(std::vector<cGameObject*>& vec_pGameObject
 
 	for (int index = 0; index != vec_pGameObjects.size(); index++)
 	{
-		if (vec_pGameObjects[index]->positionXYZ.x > 128.0f || vec_pGameObjects[index]->positionXYZ.x < -128.0f)
+		
+		if (vec_pGameObjects[index]->positionXYZ.x > 256 || vec_pGameObjects[index]->positionXYZ.x < -256)
 		{
 			vec_pGameObjects[index]->positionXYZ = glm::vec3(randX, randY, randZ);
 			vec_pGameObjects[index]->velocity = glm::vec3(0, 0, 0);
 		}
-		if (vec_pGameObjects[index]->positionXYZ.z > 128.0f || vec_pGameObjects[index]->positionXYZ.z < -128.0f)
+		if (vec_pGameObjects[index]->positionXYZ.z > 256 || vec_pGameObjects[index]->positionXYZ.z < -256)
 		{
 			vec_pGameObjects[index]->positionXYZ = glm::vec3(randX, randY, randZ);
 			vec_pGameObjects[index]->velocity = glm::vec3(0, 0, 0);
 		}
+		/*if (vec_pGameObjects[index]->positionXYZ.y > 256 || vec_pGameObjects[index]->positionXYZ.y < 0)
+		{
+			vec_pGameObjects[index]->positionXYZ = glm::vec3(randX, randY, randZ);
+			vec_pGameObjects[index]->velocity = glm::vec3(0, 0, 0);
+		}*/
 		/*if(index != 0 && index != 1 && index != 2)
 		{
 			if (vec_pGameObjects[index]->positionXYZ.y > 50.0f || vec_pGameObjects[index]->positionXYZ.y < 0.0f)
@@ -227,10 +265,10 @@ void cPhysics::TestForCollisions(std::vector<cGameObject*>& vec_pGameObjects)
 	sCollisionInfo collisionInfo;
 
 	for (unsigned int outerLoopIndex = 0;
-		outerLoopIndex != vec_pGameObjects.size(); outerLoopIndex++)
+		outerLoopIndex < vec_pGameObjects.size()-1; outerLoopIndex++)
 	{
-		for (unsigned int innerLoopIndex = 0;
-			innerLoopIndex != vec_pGameObjects.size(); innerLoopIndex++)
+		for (unsigned int innerLoopIndex = outerLoopIndex+1;
+			innerLoopIndex < vec_pGameObjects.size(); innerLoopIndex++)
 		{
 			cGameObject* pA = vec_pGameObjects[outerLoopIndex];
 			cGameObject* pB = vec_pGameObjects[innerLoopIndex];
@@ -481,5 +519,58 @@ void cPhysics::seek(cGameObject* target, cGameObject* aiObj,double deltatime)
 		aiObj->velocity = normalize(aiObj->velocity) * maxVelocity;
 	}
 	
-} 
+}
+void cPhysics::seek(glm::vec3 targetPos, cGameObject* aiObj, double deltatime)
+{
+	glm::vec3 desieredVelocity = targetPos - aiObj->positionXYZ;
+
+	float dist = desieredVelocity.length();
+
+	glm::vec3 direction = glm::normalize(desieredVelocity);
+
+	if (dist < slowingRadius)
+	{
+		desieredVelocity = direction * maxVelocity * (dist / slowingRadius);
+	}
+	else
+	{
+		desieredVelocity = direction * maxVelocity;
+	}
+
+	glm::vec3 steer = desieredVelocity - aiObj->velocity;
+
+	aiObj->velocity += steer * (float)deltatime;
+
+	if (aiObj->velocity.length() > maxVelocity)
+	{
+		aiObj->velocity = normalize(aiObj->velocity) * maxVelocity;
+	}
+}
+void cPhysics::flee(cGameObject* target, cGameObject* aiObj, double deltatime)
+{
+	glm::vec3 desieredVelocity =  aiObj->positionXYZ- target->positionXYZ;
+
+	float dist = desieredVelocity.length();
+
+	glm::vec3 direction = glm::normalize(desieredVelocity);
+
+	if (dist < slowingRadius)
+	{
+		desieredVelocity = direction * maxVelocity * (dist / slowingRadius);
+	}
+	else
+	{
+		desieredVelocity = direction * maxVelocity;
+	}
+
+	glm::vec3 steer = desieredVelocity - aiObj->velocity;
+
+	aiObj->velocity += steer * (float)deltatime;
+
+	if (aiObj->velocity.length() > maxVelocity)
+	{
+		aiObj->velocity = normalize(aiObj->velocity) * maxVelocity;
+	}
+
+}
 

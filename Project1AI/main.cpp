@@ -330,11 +330,19 @@ int main()
 		
 		//Physics implementation
 
-		pPhysics->IntegrationStep(g_vec_pGameObjects, deltaTime);		
+		//pPhysics->IntegrationStep(g_vec_pGameObjects, deltaTime);		
+		pPhysics->integrate(g_vec_pGameObjects, glm::vec3(0, 0, 0), deltaTime);
 		pPhysics->TestForCollisions(g_vec_pGameObjects);			
 		pPhysics->CheckIfCrossedEndBound(g_vec_pGameObjects);
 		pPhysics->seek(g_vec_pGameObjects[4], g_vec_pGameObjects[5], deltaTime);
-		//pPhysics->seek(g_vec_pGameObjects[4], g_vec_pGameObjects[6], deltaTime);
+		pPhysics->flee(g_vec_pGameObjects[4], g_vec_pGameObjects[6], deltaTime);
+		pPhysics->flee(g_vec_pGameObjects[4], g_vec_pGameObjects[7], deltaTime);
+		pPhysics->flee(g_vec_pGameObjects[4], g_vec_pGameObjects[8], deltaTime);
+		pPhysics->flee(g_vec_pGameObjects[4], g_vec_pGameObjects[9], deltaTime);
+		pPhysics->flee(g_vec_pGameObjects[4], g_vec_pGameObjects[10], deltaTime);
+		pPhysics->flee(g_vec_pGameObjects[4], g_vec_pGameObjects[11], deltaTime);
+
+		pPhysics->seek(glm::vec3(100,5,0), g_vec_pGameObjects[12], deltaTime);
 
 		//Physics implementation		
 

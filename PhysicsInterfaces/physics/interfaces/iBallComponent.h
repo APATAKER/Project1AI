@@ -17,7 +17,7 @@ namespace nPhysics
 		virtual ~iBallComponent() {}
 		
 	protected:
-		iBallComponent() : iPhysicsComponent(eComponentType::ball) {}
+		iBallComponent() : iPhysicsComponent(eComponentType::SPHERE) {}
 	private:
 		iBallComponent() = delete;
 		iBallComponent(const iBallComponent& other) = delete;

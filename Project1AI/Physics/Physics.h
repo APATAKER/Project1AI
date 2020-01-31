@@ -9,13 +9,13 @@
 
 struct  State
 {
-	float x;
-	float v;
+	glm::vec3 pos;
+	glm::vec3 vel;
 };
 struct Derivative
 {
-	float dx;
-	float dv;
+	glm::vec3 dx;
+	glm::vec3 dv;
 };
 
 
@@ -45,18 +45,15 @@ public:
 	};
 
 	
-	Derivative evaluate(const State& initial,
-		double t,
+	Derivative evaluate(const State& initial, glm::vec3 gravity,
 		float dt,
 		const Derivative& d);
 
 
-	float acceleration(const State& state, double t);
+	glm::vec3 acceleration(const State& state, double t);
 	
 
-	void integrate(State& state,
-		double t,
-		float dt);
+	void integrate(std::vector<cGameObject*>& vec_pGameObjects, glm::vec3 gravity, float dt);
 	
 	
 
@@ -108,6 +105,9 @@ public:
 		cMesh& mesh_transformedInWorld);
 
 	void seek(cGameObject* target, cGameObject* aiObj, double deltatime);
+	void seek(glm::vec3 targetPos, cGameObject* aiObj, double deltatime);
+
+	void flee(cGameObject* target, cGameObject* aiObj, double deltatime);
 
 
 private:
