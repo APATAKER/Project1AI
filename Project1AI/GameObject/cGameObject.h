@@ -31,10 +31,9 @@ public:
 
 	glm::vec3  positionXYZ;
 
-private:
 	glm::quat m_qRotation;					// Orientation as a quaternion
-	glm::vec3 m_at;
 	glm::vec3 m_up;
+	glm::vec3 m_at;
 
 	glm::vec3 intialFront;
 	glm::vec3 initalUp;
@@ -44,6 +43,13 @@ public:
 	glm::quat m_qRotationalVelocity;		// change over time in rotation
 	// updates rotation 
 	void Update(double deltaTime);
+	void updateAtFromOrientation(void);
+
+	glm::vec3 getAtInWorldSpace(void);
+
+	void MoveForward_Z(float amount);
+	void MoveLeftRight_X(float amount);
+	void MoveUpDown_Y(float amount);
 
 	// Overwrite the orientation
 	void setOrientation(glm::vec3 EulerAngleDegreesXYZ);
@@ -73,6 +79,7 @@ public:
 	glm::vec3 velocity;
 	glm::vec3 accel;
 
+	bool bulletFired;
 
 	// If the object has an inverse mass of 0.0
 	//	then it's not updated by the physics code

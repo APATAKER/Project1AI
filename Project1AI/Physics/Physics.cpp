@@ -32,10 +32,9 @@ glm::vec3 cPhysics::acceleration(const State& state, double t)
 	return accl;
 }
 
-void cPhysics::integrate(std::vector<cGameObject*>& vec_pGameObjects, glm::vec3 gravity, float dt)
+void cPhysics::integrate(std::vector<cGameObject*>& vec_pGameObjects, float dt)
 {
 	Derivative a, b, c, d;
-	gravity = glm::vec3(0.0);getGravity();
 	for (int i = 0; i < vec_pGameObjects.size(); i++)
 	{
 
@@ -44,6 +43,8 @@ void cPhysics::integrate(std::vector<cGameObject*>& vec_pGameObjects, glm::vec3 
 		State state;
 		state.pos = curObj->positionXYZ;
 		state.vel = curObj->velocity;
+
+		glm::vec3 gravity = curObj->velocity + curObj->accel ; //getGravity();
 
 		if(curObj->inverseMass == 1)
 		{
@@ -77,6 +78,18 @@ void cPhysics::integrate(std::vector<cGameObject*>& vec_pGameObjects, glm::vec3 
 		curObj->positionXYZ = state.pos;
 		curObj->velocity = state.vel;
 	}
+	}
+}
+
+void cPhysics::bulletHolder(std::vector<cGameObject*>& vec_pGameObjects)
+{
+	for (int i = 0; i < vec_pGameObjects.size(); i++)
+	{
+		if (vec_pGameObjects[i]->friendlyName == "bullet1" || vec_pGameObjects[i]->friendlyName == "bullet2" || vec_pGameObjects[i]->friendlyName == "bullet3")
+		{
+			if(!vec_pGameObjects[i]->bulletFired)
+			vec_pGameObjects[i]->positionXYZ = vec_pGameObjects[4]->positionXYZ;
+		}
 	}
 }
 
@@ -240,19 +253,6 @@ void cPhysics::CheckIfCrossedEndBound(std::vector<cGameObject*>& vec_pGameObject
 			vec_pGameObjects[index]->positionXYZ = glm::vec3(randX, randY, randZ);
 			vec_pGameObjects[index]->velocity = glm::vec3(0, 0, 0);
 		}
-		/*if (vec_pGameObjects[index]->positionXYZ.y > 256 || vec_pGameObjects[index]->positionXYZ.y < 0)
-		{
-			vec_pGameObjects[index]->positionXYZ = glm::vec3(randX, randY, randZ);
-			vec_pGameObjects[index]->velocity = glm::vec3(0, 0, 0);
-		}*/
-		/*if(index != 0 && index != 1 && index != 2)
-		{
-			if (vec_pGameObjects[index]->positionXYZ.y > 50.0f || vec_pGameObjects[index]->positionXYZ.y < 0.0f)
-			{
-				vec_pGameObjects[index]->positionXYZ = glm::vec3(randX, randY, randZ);
-				vec_pGameObjects[index]->velocity = glm::vec3(0, 0, 0);
-			}
-		}*/
 	}
 }
 
@@ -265,9 +265,9 @@ void cPhysics::TestForCollisions(std::vector<cGameObject*>& vec_pGameObjects)
 	sCollisionInfo collisionInfo;
 
 	for (unsigned int outerLoopIndex = 0;
-		outerLoopIndex < vec_pGameObjects.size()-1; outerLoopIndex++)
+		outerLoopIndex < vec_pGameObjects.size(); outerLoopIndex++)
 	{
-		for (unsigned int innerLoopIndex = outerLoopIndex+1;
+		for (unsigned int innerLoopIndex = outerLoopIndex;
 			innerLoopIndex < vec_pGameObjects.size(); innerLoopIndex++)
 		{
 			cGameObject* pA = vec_pGameObjects[outerLoopIndex];

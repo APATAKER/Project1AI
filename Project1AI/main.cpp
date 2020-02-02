@@ -27,6 +27,7 @@ glm::vec3 LightSpotDirection = glm::vec3(0.0f, -1.0f, 0.0f);
 
 
 std::vector<cGameObject*> g_vec_pGameObjects;
+std::vector<cGameObject*> vec_bullets;
 
 
 void DrawObject(glm::mat4 matWorld,
@@ -310,9 +311,9 @@ int main()
 			<< g_pFlyCamera->eye.y << ", "
 			<< g_pFlyCamera->eye.z
 			<< "object postion: "
-			<< g_vec_pGameObjects[0]->positionXYZ.x << " : "
-			<< g_vec_pGameObjects[0]->positionXYZ.y<< " : "
-			<< g_vec_pGameObjects[0]->positionXYZ.z;
+			<< g_vec_pGameObjects[4]->friendlyName<<" "<< g_vec_pGameObjects[4]->positionXYZ.x << " : "
+			<< g_vec_pGameObjects[4]->positionXYZ.y<< " : "
+			<< g_vec_pGameObjects[4]->positionXYZ.z;
 		glfwSetWindowTitle(window, ssTitle.str().c_str());
 
 		for (int index = 0; index != ::g_vec_pGameObjects.size(); index++)
@@ -331,8 +332,9 @@ int main()
 		//Physics implementation
 
 		//pPhysics->IntegrationStep(g_vec_pGameObjects, deltaTime);		
-		pPhysics->integrate(g_vec_pGameObjects, glm::vec3(0, 0, 0), deltaTime);
-		pPhysics->TestForCollisions(g_vec_pGameObjects);			
+		pPhysics->integrate(g_vec_pGameObjects, deltaTime);
+		pPhysics->TestForCollisions(g_vec_pGameObjects);
+		pPhysics->bulletHolder(g_vec_pGameObjects);
 		pPhysics->CheckIfCrossedEndBound(g_vec_pGameObjects);
 		pPhysics->seek(g_vec_pGameObjects[4], g_vec_pGameObjects[5], deltaTime);
 		pPhysics->flee(g_vec_pGameObjects[4], g_vec_pGameObjects[6], deltaTime);
@@ -342,7 +344,8 @@ int main()
 		pPhysics->flee(g_vec_pGameObjects[4], g_vec_pGameObjects[10], deltaTime);
 		pPhysics->flee(g_vec_pGameObjects[4], g_vec_pGameObjects[11], deltaTime);
 
-		pPhysics->seek(glm::vec3(100,5,0), g_vec_pGameObjects[12], deltaTime);
+		pPhysics->seek(glm::vec3(-100,5,0), g_vec_pGameObjects[12], deltaTime);
+		pPhysics->seek(glm::vec3(100,5,0),g_vec_pGameObjects[13], deltaTime);
 
 		//Physics implementation		
 

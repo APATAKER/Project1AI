@@ -34,9 +34,10 @@ cGameObject::cGameObject()
 
 	// Rotation of 0 degrees.
 	this->m_qRotation = glm::quat(glm::vec3(0.0f,0.0f,0.0f));
-
 	this->m_qRotationalVelocity = glm::quat(glm::vec3(0.0f,0.0f,0.0f));
-
+	this->intialFront = glm::vec3(0, 0, 1);
+	this->initalUp = glm::vec3(0, 1, 0);
+	
 	this->textures[0] = "defaultTex.bmp";
 
 	this->textureRatio[0] = 1.0f;
@@ -45,6 +46,8 @@ cGameObject::cGameObject()
 	this->textureRatio[3] = 0.0f;
 
 	this->alphaTransparency = 1.0f;
+
+	this->bulletFired = false;
 
 	return;
 }
@@ -89,6 +92,42 @@ unsigned int cGameObject::next_uniqueID = 1000;	// Starting at 1000, just becaus
 
 
 
+
+void cGameObject::updateAtFromOrientation(void)
+{
+	glm::mat4 matRotation = glm::mat4(this->m_qRotation);
+
+	glm::vec4 frontOfCamera = glm::vec4(this->intialFront, 1.0f);
+
+	glm::vec4 newAt = matRotation * frontOfCamera;
+
+	// Update the "At"
+	this->m_at = glm::vec3(newAt);
+
+
+	return;
+}
+
+glm::vec3 cGameObject::getAtInWorldSpace(void)
+{
+	return this->positionXYZ + this->m_at;
+}
+
+void cGameObject::MoveForward_Z(float amount)
+{
+	glm::vec3 direction = this->getAtInWorldSpace() - this->positionXYZ;
+
+	// Make direction a "unit length"
+	direction = glm::normalize(direction);
+
+	// Generate a "forward" adjustment value 
+	glm::vec3 amountToMove = direction * amount;
+
+	// Add this to the eye
+	this->positionXYZ += amountToMove;
+
+	return;
+}
 
 //glm::quat m_qRotation;		// Orientation as a quaternion
 glm::quat cGameObject::getQOrientation(void)
@@ -168,7 +207,8 @@ void cGameObject::MoveInRelativeDirection(glm::vec3 relativeDirection)
 
 
 	// Add this to the position of the object
-	this->positionXYZ += glm::vec3( forwardInWorldSpace );
+	//this->positionXYZ += glm::vec3( forwardInWorldSpace );
+	this->velocity += glm::vec3( forwardInWorldSpace );
 
 	return;
 }

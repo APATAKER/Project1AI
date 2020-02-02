@@ -18,7 +18,7 @@ bool areAllModifiersUp(GLFWwindow* window);
 extern std::vector<cGameObject*> g_vec_pGameObjects;
 extern cGameObject* findGameObjectByFriendlyName(std::vector<cGameObject*> vGameObjects, std::string friendlyname);
 
-const float MOVESPEED = 10.0f;
+const float MOVESPEED = 1.0f;
 
 
 // openGLfunc
@@ -59,24 +59,84 @@ GLFWwindow* creatOpenGL(GLFWwindow* win)
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	cGameObject* player = findGameObjectByFriendlyName(g_vec_pGameObjects, "player");
-
+	cGameObject* bullet = findGameObjectByFriendlyName(g_vec_pGameObjects, "bullet1");
+	
 	if(isOnlyCtrlKeyDown(mods))
 	{
-		if(key == GLFW_KEY_W && action == GLFW_PRESS)
+		if(glfwGetKey(window, GLFW_KEY_W))
 		{
-			player->velocity.z += MOVESPEED;
+			player->updateAtFromOrientation();
+			//player->velocity.z += MOVESPEED;
+			player->MoveForward_Z(+MOVESPEED);
 		}
-		if(key == GLFW_KEY_S && action == GLFW_PRESS)
+		if(glfwGetKey(window, GLFW_KEY_S))
 		{
-			player->velocity.z -= MOVESPEED;
+			//player->velocity.z -= MOVESPEED;
+			player->updateAtFromOrientation();
+			player->MoveForward_Z(-MOVESPEED);
+			
 		}
-		if (key == GLFW_KEY_D && action == GLFW_PRESS)
+		if (glfwGetKey(window, GLFW_KEY_D))
 		{
-			player->velocity.x -= MOVESPEED;
+
+			player->updateOrientation(glm::vec3(0, -1, 0));
+			player->updateAtFromOrientation();
 		}
-		if (key == GLFW_KEY_A && action == GLFW_PRESS)
+		if (glfwGetKey(window, GLFW_KEY_A))
 		{
-			player->velocity.x += MOVESPEED;
+
+			player->updateOrientation(glm::vec3(0, 1, 0));
+			player->updateAtFromOrientation();
+		}
+		if(glfwGetKey(window, GLFW_KEY_W)  && glfwGetKey(window, GLFW_KEY_D))
+		{
+			player->updateAtFromOrientation();
+			player->MoveForward_Z(+MOVESPEED);
+			player->updateOrientation(glm::vec3(0, -1, 0));
+			player->updateAtFromOrientation();
+		}
+		if (glfwGetKey(window, GLFW_KEY_W) && glfwGetKey(window, GLFW_KEY_A))
+		{
+			player->updateAtFromOrientation();
+			player->MoveForward_Z(+MOVESPEED);
+			player->updateOrientation(glm::vec3(0, 1, 0));
+			player->updateAtFromOrientation();
+		}
+		if (glfwGetKey(window, GLFW_KEY_S) && glfwGetKey(window, GLFW_KEY_D))
+		{
+			player->updateAtFromOrientation();
+			player->MoveForward_Z(-MOVESPEED);
+			player->updateOrientation(glm::vec3(0, -1, 0));
+			player->updateAtFromOrientation();
+		}
+		if (glfwGetKey(window, GLFW_KEY_S) && glfwGetKey(window, GLFW_KEY_A))
+		{
+			player->updateAtFromOrientation();
+			player->MoveForward_Z(-MOVESPEED);
+			player->updateOrientation(glm::vec3(0, 1, 0));
+			player->updateAtFromOrientation();
+		}
+
+		if(glfwGetKey(window,GLFW_KEY_SPACE) && action == GLFW_PRESS)
+		{
+			if(!bullet->bulletFired)
+			{
+				bullet->bulletFired = true;
+			}
+			else
+			{
+				bullet = findGameObjectByFriendlyName(g_vec_pGameObjects, "bullet2");
+				bullet->bulletFired = true;
+			}
+			
+		}
+		if(key == GLFW_KEY_Q && action == GLFW_PRESS)
+		{
+			//player->updateOrientation(glm::vec3(0, 10, 0));
+		}
+		if (key == GLFW_KEY_E && action == GLFW_PRESS)
+		{
+			//player->updateOrientation(glm::vec3(0, -10, 0));
 		}
 	}
 	

@@ -10,7 +10,9 @@
     "assets/models/Sphere_Radius_1_XYZ_n_uv.ply",
     "assets/models/Sphere_Radius_2_XYZ_n_uv.ply",
     "assets/models/Sphere_Radius_3_XYZ_n_uv.ply",
-    "assets/models/Sphere_Radius_5_XYZ_n_uv.ply"
+    "assets/models/Sphere_Radius_5_XYZ_n_uv.ply",
+    "assets/models/Sphere_Radius_0.5_XYZ_n_uv.ply",
+    "assets/models/kunai_n_uv.ply"
   ],
   "MeshName": [
     "ground",
@@ -19,7 +21,9 @@
     "sphere1",
     "sphere2",
     "sphere3",
-    "sphere5"
+    "sphere5",
+    "bullet",
+    "kunai"
   ],
   "Textures": [
     "defaultTex.bmp",
@@ -162,7 +166,7 @@
       "sphereRadius": 0.0
     },
     {
-      "meshname": "sphere3",
+      "meshname": "kunai",
       "friendlyname": "player", 
       "position": {
         "x": 0.0,
@@ -475,11 +479,107 @@
         "b": 1.0,
         "a": 1.0
       },
-      "tex": [ "greentex.bmp", "", "", "" ],
+      "tex": [ "violettex.bmp", "", "", "" ],
       "texratio": [ 1, 0, 0, 0 ],
       "inversemass": 1,
       "physicsshapetype": 1,
       "sphereRadius": 2.0
+    },
+    {
+      "meshname": "bullet",
+      "friendlyname": "bullet1",
+      "position": {
+        "x": 0.0,
+        "y": 10.0,
+        "z": 0.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": 1.0,
+      "objectcolor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 1.0
+      },
+      "debugcolor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 1.0
+      },
+      "tex": [ "PlasmaRing.bmp", "", "", "" ],
+      "texratio": [ 1, 0, 0, 0 ],
+      "inversemass": 1,
+      "physicsshapetype": 1,
+      "sphereRadius": 0.5
+    },
+    {
+      "meshname": "bullet",
+      "friendlyname": "bullet2",
+      "position": {
+        "x": 0.0,
+        "y": 10.0,
+        "z": 0.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": 1.0,
+      "objectcolor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 1.0
+      },
+      "debugcolor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 1.0
+      },
+      "tex": [ "PlasmaRing.bmp", "", "", "" ],
+      "texratio": [ 1, 0, 0, 0 ],
+      "inversemass": 1,
+      "physicsshapetype": 1,
+      "sphereRadius": 0.5
+    },
+    {
+      "meshname": "bullet",
+      "friendlyname": "bullet3",
+      "position": {
+        "x": 0.0,
+        "y": 10.0,
+        "z": 0.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": 1.0,
+      "objectcolor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 1.0
+      },
+      "debugcolor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 1.0
+      },
+      "tex": [ "PlasmaRing.bmp", "", "", "" ],
+      "texratio": [ 1, 0, 0, 0 ],
+      "inversemass": 1,
+      "physicsshapetype": 1,
+      "sphereRadius": 0.5
     }
   ]
   

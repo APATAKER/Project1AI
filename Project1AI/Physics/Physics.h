@@ -53,7 +53,11 @@ public:
 	glm::vec3 acceleration(const State& state, double t);
 	
 
-	void integrate(std::vector<cGameObject*>& vec_pGameObjects, glm::vec3 gravity, float dt);
+	void integrate(std::vector<cGameObject*>& vec_pGameObjects, float dt);
+
+	// Bullet stuff
+
+	void bulletHolder(std::vector<cGameObject*>& vec_pGameObjects);
 	
 	
 

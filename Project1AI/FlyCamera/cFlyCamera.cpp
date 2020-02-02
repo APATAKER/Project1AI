@@ -207,6 +207,7 @@ void cFlyCamera::m_UpdateAtFromOrientation(void)
 	glm::vec4 frontOfCamera = glm::vec4(this->m_frontOfCamera, 1.0f);
 
 	glm::vec4 newAt = matRotation * frontOfCamera;
+	//glm::quatLookAt(glm::vec3(0,0,1),glm::vec3(0,1,0));
 
 	// Update the "At"
 	this->m_at = glm::vec3(newAt);
