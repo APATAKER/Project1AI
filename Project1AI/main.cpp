@@ -219,6 +219,8 @@ int main()
 	glm::vec3 closestPoint = glm::vec3(0.0f, 0.0f, 0.0f);
 	cPhysics::sPhysicsTriangle closestTriangle;
 
+	int* flag = new int();
+	*flag = 0;
 
 	
 	while (!glfwWindowShouldClose(window))
@@ -313,7 +315,9 @@ int main()
 			<< "object postion: "
 			<< g_vec_pGameObjects[4]->friendlyName<<" "<< g_vec_pGameObjects[4]->positionXYZ.x << " : "
 			<< g_vec_pGameObjects[4]->positionXYZ.y<< " : "
-			<< g_vec_pGameObjects[4]->positionXYZ.z;
+			<< g_vec_pGameObjects[4]->positionXYZ.z
+		<<"at vector player: "<<g_vec_pGameObjects[4]->m_at.x<<" "<< g_vec_pGameObjects[4]->m_at.y<<" "<< g_vec_pGameObjects[4]->m_at.z<<",ai: "
+		<< g_vec_pGameObjects[5]->m_at.x<<" "<< g_vec_pGameObjects[5]->m_at.y<<" "<< g_vec_pGameObjects[5]->m_at.z;
 		glfwSetWindowTitle(window, ssTitle.str().c_str());
 
 		for (int index = 0; index != ::g_vec_pGameObjects.size(); index++)
@@ -335,16 +339,28 @@ int main()
 		pPhysics->integrate(g_vec_pGameObjects, deltaTime);
 		pPhysics->TestForCollisions(g_vec_pGameObjects);
 		pPhysics->bulletHolder(g_vec_pGameObjects);
+		pPhysics->bulletShoot(g_vec_pGameObjects);
+		pPhysics->checkBulletCollision(g_vec_pGameObjects);
 		pPhysics->CheckIfCrossedEndBound(g_vec_pGameObjects);
-		pPhysics->seek(g_vec_pGameObjects[4], g_vec_pGameObjects[5], deltaTime);
-		pPhysics->flee(g_vec_pGameObjects[4], g_vec_pGameObjects[6], deltaTime);
-		pPhysics->flee(g_vec_pGameObjects[4], g_vec_pGameObjects[7], deltaTime);
-		pPhysics->flee(g_vec_pGameObjects[4], g_vec_pGameObjects[8], deltaTime);
-		pPhysics->flee(g_vec_pGameObjects[4], g_vec_pGameObjects[9], deltaTime);
-		pPhysics->flee(g_vec_pGameObjects[4], g_vec_pGameObjects[10], deltaTime);
-		pPhysics->flee(g_vec_pGameObjects[4], g_vec_pGameObjects[11], deltaTime);
+		//pPhysics->seek(g_vec_pGameObjects[4], g_vec_pGameObjects[5], deltaTime);
+		pPhysics->aiMotion(g_vec_pGameObjects[4], g_vec_pGameObjects[5], deltaTime);
+		//pPhysics->pursue(g_vec_pGameObjects[4], g_vec_pGameObjects[5], deltaTime);
+		pPhysics->aiMotion(g_vec_pGameObjects[4], g_vec_pGameObjects[6], deltaTime);
+		pPhysics->aiMotion(g_vec_pGameObjects[4], g_vec_pGameObjects[7], deltaTime);
+		pPhysics->aiMotion(g_vec_pGameObjects[4], g_vec_pGameObjects[8], deltaTime);
+		pPhysics->aiMotion(g_vec_pGameObjects[4], g_vec_pGameObjects[9], deltaTime);
+		pPhysics->aiMotion(g_vec_pGameObjects[4], g_vec_pGameObjects[10], deltaTime);
+		pPhysics->aiMotion(g_vec_pGameObjects[4], g_vec_pGameObjects[11], deltaTime);
 
-		pPhysics->seek(glm::vec3(-100,5,0), g_vec_pGameObjects[12], deltaTime);
+		
+		std::vector<cPhysics::wanderDetails> wanderPts;
+		cPhysics::wanderDetails Wan1(glm::vec3(-100,5,0),5.0f);
+		wanderPts.push_back(Wan1);
+		cPhysics::wanderDetails Wan2(glm::vec3(-100,5,100),5.0f);
+		wanderPts.push_back(Wan2);
+
+
+		pPhysics->wander(*flag,wanderPts, g_vec_pGameObjects[12], deltaTime);
 		pPhysics->seek(glm::vec3(100,5,0),g_vec_pGameObjects[13], deltaTime);
 
 		//Physics implementation		

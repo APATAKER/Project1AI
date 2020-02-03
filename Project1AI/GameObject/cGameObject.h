@@ -44,6 +44,8 @@ public:
 	// updates rotation 
 	void Update(double deltaTime);
 	void updateAtFromOrientation(void);
+	glm::vec3 getCurrentDirection(void);
+	
 
 	glm::vec3 getAtInWorldSpace(void);
 
@@ -80,6 +82,7 @@ public:
 	glm::vec3 accel;
 
 	bool bulletFired;
+	bool isDead;
 
 	// If the object has an inverse mass of 0.0
 	//	then it's not updated by the physics code

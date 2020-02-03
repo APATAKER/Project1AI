@@ -37,6 +37,7 @@ cGameObject::cGameObject()
 	this->m_qRotationalVelocity = glm::quat(glm::vec3(0.0f,0.0f,0.0f));
 	this->intialFront = glm::vec3(0, 0, 1);
 	this->initalUp = glm::vec3(0, 1, 0);
+	this->m_up = this->initalUp;
 	
 	this->textures[0] = "defaultTex.bmp";
 
@@ -48,6 +49,7 @@ cGameObject::cGameObject()
 	this->alphaTransparency = 1.0f;
 
 	this->bulletFired = false;
+	this->isDead = false;
 
 	return;
 }
@@ -108,6 +110,13 @@ void cGameObject::updateAtFromOrientation(void)
 	return;
 }
 
+glm::vec3 cGameObject::getCurrentDirection(void)
+{
+	this->updateAtFromOrientation();
+	
+	return this->m_at;
+}
+
 glm::vec3 cGameObject::getAtInWorldSpace(void)
 {
 	return this->positionXYZ + this->m_at;
@@ -127,6 +136,16 @@ void cGameObject::MoveForward_Z(float amount)
 	this->positionXYZ += amountToMove;
 
 	return;
+}
+
+void cGameObject::MoveLeftRight_X(float amount)
+{
+
+	glm::vec3 vecLeft = glm::cross(this->getCurrentDirection(), this->m_up);
+
+	glm::vec3 vecAmountToMove = glm::normalize(vecLeft) * amount;
+
+	this->positionXYZ += vecAmountToMove;
 }
 
 //glm::quat m_qRotation;		// Orientation as a quaternion

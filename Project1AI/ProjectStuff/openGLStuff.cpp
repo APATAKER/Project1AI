@@ -78,13 +78,15 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		}
 		if (glfwGetKey(window, GLFW_KEY_D))
 		{
-
+			/*player->updateAtFromOrientation();
+			player->MoveLeftRight_X(+MOVESPEED);*/
 			player->updateOrientation(glm::vec3(0, -1, 0));
 			player->updateAtFromOrientation();
 		}
 		if (glfwGetKey(window, GLFW_KEY_A))
 		{
-
+			//player->updateAtFromOrientation();
+			//player->MoveLeftRight_X(-MOVESPEED);
 			player->updateOrientation(glm::vec3(0, 1, 0));
 			player->updateAtFromOrientation();
 		}
@@ -122,12 +124,13 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			if(!bullet->bulletFired)
 			{
 				bullet->bulletFired = true;
+				//bullet->MoveInRelativeDirection(player->m_at);
 			}
-			else
+			/*else
 			{
 				bullet = findGameObjectByFriendlyName(g_vec_pGameObjects, "bullet2");
 				bullet->bulletFired = true;
-			}
+			}*/
 			
 		}
 		if(key == GLFW_KEY_Q && action == GLFW_PRESS)

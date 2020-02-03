@@ -198,12 +198,12 @@
       "sphereRadius": 3.0
     },
     {
-      "meshname": "sphere2",
+      "meshname": "kunai",
       "friendlyname": "enemy1", 
       "position": {
         "x": 0.0,
         "y": 5.0,
-        "z": 10.0
+        "z": 100.0
       },
       "rotation": {
         "x": 0.0,
@@ -230,7 +230,7 @@
       "sphereRadius": 2.0
     },
     {
-      "meshname": "sphere2",
+      "meshname": "kunai",
       "friendlyname": "enemy2", 
       "position": {
         "x": 10.0,
@@ -262,8 +262,8 @@
       "sphereRadius": 2.0
     },
     {
-      "meshname": "sphere2",
-      "friendlyname": "enemy3", 
+      "meshname": "kunai",
+      "friendlyname": "enemy3",
       "position": {
         "x": 10.0,
         "y": 5.0,
@@ -294,7 +294,7 @@
       "sphereRadius": 2.0
     },
     {
-      "meshname": "sphere2",
+      "meshname": "kunai",
       "friendlyname": "enemy4",
       "position": {
         "x": 15.0,
@@ -326,7 +326,7 @@
       "sphereRadius": 2.0
     },
     {
-      "meshname": "sphere2",
+      "meshname": "kunai",
       "friendlyname": "enemy5",
       "position": {
         "x": 15.0,
@@ -358,7 +358,7 @@
       "sphereRadius": 2.0
     },
     {
-      "meshname": "sphere2",
+      "meshname": "kunai",
       "friendlyname": "enemy6",
       "position": {
         "x": -10.0,
@@ -390,7 +390,7 @@
       "sphereRadius": 2.0
     },
     {
-      "meshname": "sphere2",
+      "meshname": "kunai",
       "friendlyname": "enemy7",
       "position": {
         "x": -10.0,
@@ -400,7 +400,7 @@
       "rotation": {
         "x": 0.0,
         "y": 0.0,
-        "z": 0.0 
+        "z": 0.0
       },
       "scale": 1.0,
       "objectcolor": {
@@ -422,7 +422,7 @@
       "sphereRadius": 2.0
     },
     {
-      "meshname": "sphere2",
+      "meshname": "kunai",
       "friendlyname": "enemy8",
       "position": {
         "x": -10.0,
@@ -454,7 +454,7 @@
       "sphereRadius": 2.0
     },
     {
-      "meshname": "sphere2",
+      "meshname": "kunai",
       "friendlyname": "enemy9",
       "position": {
         "x": 10.0,
@@ -515,71 +515,7 @@
       "texratio": [ 1, 0, 0, 0 ],
       "inversemass": 1,
       "physicsshapetype": 1,
-      "sphereRadius": 0.5
-    },
-    {
-      "meshname": "bullet",
-      "friendlyname": "bullet2",
-      "position": {
-        "x": 0.0,
-        "y": 10.0,
-        "z": 0.0
-      },
-      "rotation": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "scale": 1.0,
-      "objectcolor": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0,
-        "a": 1.0
-      },
-      "debugcolor": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0,
-        "a": 1.0
-      },
-      "tex": [ "PlasmaRing.bmp", "", "", "" ],
-      "texratio": [ 1, 0, 0, 0 ],
-      "inversemass": 1,
-      "physicsshapetype": 1,
-      "sphereRadius": 0.5
-    },
-    {
-      "meshname": "bullet",
-      "friendlyname": "bullet3",
-      "position": {
-        "x": 0.0,
-        "y": 10.0,
-        "z": 0.0
-      },
-      "rotation": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "scale": 1.0,
-      "objectcolor": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0,
-        "a": 1.0
-      },
-      "debugcolor": {
-        "r": 1.0,
-        "g": 1.0,
-        "b": 1.0,
-        "a": 1.0
-      },
-      "tex": [ "PlasmaRing.bmp", "", "", "" ],
-      "texratio": [ 1, 0, 0, 0 ],
-      "inversemass": 1,
-      "physicsshapetype": 1,
-      "sphereRadius": 0.5
+      "sphereRadius": 1.0
     }
   ]
   

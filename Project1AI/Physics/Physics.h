@@ -20,11 +20,20 @@ struct Derivative
 
 
 
+
+
 class cPhysics
 {
 public:
 	cPhysics();
 
+	struct wanderDetails
+	{
+		wanderDetails(glm::vec3 wanderPt,float radius);
+		glm::vec3 wanderPt;
+		float radius;
+	};
+	
 	// Alias to a type "existing type" "new type name"
 	typedef glm::vec3 Point;
 	typedef glm::vec3 Vector;
@@ -58,6 +67,8 @@ public:
 	// Bullet stuff
 
 	void bulletHolder(std::vector<cGameObject*>& vec_pGameObjects);
+
+	void bulletShoot(std::vector<cGameObject*>& vec_pGameObjects);
 	
 	
 
@@ -111,7 +122,22 @@ public:
 	void seek(cGameObject* target, cGameObject* aiObj, double deltatime);
 	void seek(glm::vec3 targetPos, cGameObject* aiObj, double deltatime);
 
+	void pursue(cGameObject* target, cGameObject* aiObj, double deltatime);
+	
+	
+	void wander(int& flag,std::vector<wanderDetails> wanderPts, cGameObject* aiObj, double deltatime);
+
 	void flee(cGameObject* target, cGameObject* aiObj, double deltatime);
+
+	void checkBulletCollision(std::vector<cGameObject*>& vec_pGameObjects);
+
+	glm::quat safeQuatLookAt(
+		glm::vec3 const& lookFrom,
+		glm::vec3 const& lookTo,
+		glm::vec3 const& up);
+
+	void aiMotion(cGameObject* target, cGameObject* aiObj, double deltatime);
+	
 
 
 private:
