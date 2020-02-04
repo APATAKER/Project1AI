@@ -7,6 +7,8 @@
 
 cGameObject::cGameObject()
 {
+	this->objectType = cGameObject::OTHER;
+	
 	this->scale = 1.0f;
 	this->isVisible = true;
 
@@ -17,7 +19,8 @@ cGameObject::cGameObject()
 	this->accel = glm::vec3(0.0f,0.0f,0.0f);
 	this->inverseMass = 0.0f;	// Infinite mass
 	this->physicsShapeType = UNKNOWN;
-
+	this->objectType = OTHER;
+	
 	// Set the unique ID
 	// Take the value of the static int, 
 	//  set this to the instance variable

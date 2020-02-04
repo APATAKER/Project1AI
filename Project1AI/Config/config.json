@@ -67,7 +67,9 @@
       "texratio": [ 1, 0, 0, 0 ],
       "inversemass": 0,
       "physicsshapetype": 4,
-      "sphereRadius": 0.0
+      "objectype": 2,
+      "sphereRadius": 0.0,
+      "bulletCollisionRadius": 0.0
     },
     {
       "meshname": "ground",
@@ -99,7 +101,9 @@
       "texratio": [ 1, 0, 0, 0 ],
       "inversemass": 0,
       "physicsshapetype": 4,
-      "sphereRadius": 0.0
+      "objectype": 2,
+      "sphereRadius": 0.0,
+      "bulletCollisionRadius": 0.0
     },
     {
       "meshname": "ground",
@@ -131,7 +135,9 @@
       "texratio": [ 1, 0, 0, 0 ],
       "inversemass": 0,
       "physicsshapetype": 4,
-      "sphereRadius": 0.0
+      "objectype": 2,
+      "sphereRadius": 0.0,
+      "bulletCollisionRadius": 0.0
     },
     {
       "meshname": "sphere1",
@@ -163,11 +169,13 @@
       "texratio": [ 1, 0, 0, 0 ],
       "inversemass": 0,
       "physicsshapetype": 5,
-      "sphereRadius": 0.0
+      "objectype": 2,
+      "sphereRadius": 0.0,
+      "bulletCollisionRadius": 0.0
     },
     {
       "meshname": "kunai",
-      "friendlyname": "player", 
+      "friendlyname": "player",
       "position": {
         "x": 0.0,
         "y": 5.0,
@@ -195,11 +203,13 @@
       "texratio": [ 1, 0, 0, 0 ],
       "inversemass": 1,
       "physicsshapetype": 1,
-      "sphereRadius": 3.0
+      "objectype": 0,
+      "sphereRadius": 3.0,
+      "bulletCollisionRadius": 0.0
     },
     {
       "meshname": "kunai",
-      "friendlyname": "enemy1", 
+      "friendlyname": "enemy1",
       "position": {
         "x": 0.0,
         "y": 5.0,
@@ -227,13 +237,15 @@
       "texratio": [ 1, 0, 0, 0 ],
       "inversemass": 1,
       "physicsshapetype": 1,
-      "sphereRadius": 2.0
+      "objectype": 1,
+      "sphereRadius": 2.0,
+      "bulletCollisionRadius": 50.0
     },
     {
       "meshname": "kunai",
-      "friendlyname": "enemy2", 
+      "friendlyname": "enemy2",
       "position": {
-        "x": 10.0,
+        "x": 100.0,
         "y": 5.0,
         "z": 0.0
       },
@@ -255,11 +267,13 @@
         "b": 1.0,
         "a": 1.0
       },
-      "tex": [ "greentex.bmp", "", "", "" ],
+      "tex": [ "cyantex.bmp", "", "", "" ],
       "texratio": [ 1, 0, 0, 0 ],
       "inversemass": 1,
       "physicsshapetype": 1,
-      "sphereRadius": 2.0
+      "objectype": 1,
+      "sphereRadius": 2.0,
+      "bulletCollisionRadius": 10.0
     },
     {
       "meshname": "kunai",
@@ -267,7 +281,7 @@
       "position": {
         "x": 10.0,
         "y": 5.0,
-        "z": 10.0
+        "z": 100.0
       },
       "rotation": {
         "x": 0.0,
@@ -287,11 +301,13 @@
         "b": 1.0,
         "a": 1.0
       },
-      "tex": [ "greentex.bmp", "", "", "" ],
+      "tex": [ "cyantex.bmp", "", "", "" ],
       "texratio": [ 1, 0, 0, 0 ],
       "inversemass": 1,
       "physicsshapetype": 1,
-      "sphereRadius": 2.0
+      "objectype": 1,
+      "sphereRadius": 2.0,
+      "bulletCollisionRadius": 10.0
     },
     {
       "meshname": "kunai",
@@ -323,7 +339,9 @@
       "texratio": [ 1, 0, 0, 0 ],
       "inversemass": 1,
       "physicsshapetype": 1,
-      "sphereRadius": 2.0
+      "objectype": 1,
+      "sphereRadius": 2.0,
+      "bulletCollisionRadius": 10.0
     },
     {
       "meshname": "kunai",
@@ -355,7 +373,9 @@
       "texratio": [ 1, 0, 0, 0 ],
       "inversemass": 1,
       "physicsshapetype": 1,
-      "sphereRadius": 2.0
+      "objectype": 1,
+      "sphereRadius": 2.0,
+      "bulletCollisionRadius": 10.0
     },
     {
       "meshname": "kunai",
@@ -387,7 +407,9 @@
       "texratio": [ 1, 0, 0, 0 ],
       "inversemass": 1,
       "physicsshapetype": 1,
-      "sphereRadius": 2.0
+      "objectype": 1,
+      "sphereRadius": 2.0,
+      "bulletCollisionRadius": 10.0
     },
     {
       "meshname": "kunai",
@@ -419,7 +441,9 @@
       "texratio": [ 1, 0, 0, 0 ],
       "inversemass": 1,
       "physicsshapetype": 1,
-      "sphereRadius": 2.0
+      "objectype": 1,
+      "sphereRadius": 2.0,
+      "bulletCollisionRadius": 10.0
     },
     {
       "meshname": "kunai",
@@ -451,7 +475,9 @@
       "texratio": [ 1, 0, 0, 0 ],
       "inversemass": 1,
       "physicsshapetype": 1,
-      "sphereRadius": 2.0
+      "objectype": 1,
+      "sphereRadius": 2.0,
+      "bulletCollisionRadius": 10.0
     },
     {
       "meshname": "kunai",
@@ -483,7 +509,9 @@
       "texratio": [ 1, 0, 0, 0 ],
       "inversemass": 1,
       "physicsshapetype": 1,
-      "sphereRadius": 2.0
+      "objectype": 1,
+      "sphereRadius": 2.0,
+      "bulletCollisionRadius": 10.0
     },
     {
       "meshname": "bullet",
@@ -515,7 +543,77 @@
       "texratio": [ 1, 0, 0, 0 ],
       "inversemass": 1,
       "physicsshapetype": 1,
-      "sphereRadius": 1.0
+      "objectype": 3,
+      "sphereRadius": 1.5,
+      "bulletCollisionRadius": 0.0
+    },
+    {
+      "meshname": "bullet",
+      "friendlyname": "bullet2",
+      "position": {
+        "x": 0.0,
+        "y": 10.0,
+        "z": 0.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": 1.0,
+      "objectcolor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 1.0
+      },
+      "debugcolor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 1.0
+      },
+      "tex": [ "PlasmaRing.bmp", "", "", "" ],
+      "texratio": [ 1, 0, 0, 0 ],
+      "inversemass": 1,
+      "physicsshapetype": 1,
+      "objectype": 3,
+      "sphereRadius": 1.5,
+      "bulletCollisionRadius": 0.0
+    },
+    {
+      "meshname": "bullet",
+      "friendlyname": "bulletEnemy",
+      "position": {
+        "x": 0.0,
+        "y": -10.0,
+        "z": 0.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": 1.0,
+      "objectcolor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 1.0
+      },
+      "debugcolor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 1.0
+      },
+      "tex": [ "PlasmaRing.bmp", "", "", "" ],
+      "texratio": [ 1, 0, 0, 0 ],
+      "inversemass": 1,
+      "physicsshapetype": 1,
+      "objectype": 4,
+      "sphereRadius": 1.5,
+      "bulletCollisionRadius": 0.0
     }
   ]
   

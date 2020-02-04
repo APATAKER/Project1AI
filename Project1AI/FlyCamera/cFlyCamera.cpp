@@ -44,7 +44,7 @@ glm::vec3 cFlyCamera::getAtInWorldSpace(void)
 {
 	// The "At" is relative to the where the camera is...
 	// So just add the "At" to the current camera location
-	return this->eye + this->m_at;
+	return this->eye + this->m_at; 
 }
 
 glm::vec3 cFlyCamera::getCameraDirection(void)

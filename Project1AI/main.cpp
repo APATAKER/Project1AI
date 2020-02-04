@@ -187,8 +187,10 @@ int main()
 		}
 		gameobject->inverseMass = jgameobj["inversemass"].GetFloat();
 		gameobject->physicsShapeType = (eShapeTypes)jgameobj["physicsshapetype"].GetInt();
+		gameobject->objectType = (cGameObject::eObjectType)jgameobj["objectype"].GetInt();
 		gameobject->GameObjectMesh = findMeshByName(vModelMesh, gameobject->meshName);
 		gameobject->SPHERE_radius = jgameobj["sphereRadius"].GetFloat();
+		gameobject->collision_radius = jgameobj["bulletCollisionRadius"].GetFloat();
 		g_vec_pGameObjects.push_back(gameobject);
 	}
 
@@ -266,6 +268,7 @@ int main()
 		v = glm::lookAt(::g_pFlyCamera->getEye(),
 			::g_pFlyCamera->getAtInWorldSpace(),
 			::g_pFlyCamera->getUpVector());
+		
 
 		glViewport(0, 0, width, height);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -342,15 +345,14 @@ int main()
 		pPhysics->bulletShoot(g_vec_pGameObjects);
 		pPhysics->checkBulletCollision(g_vec_pGameObjects);
 		pPhysics->CheckIfCrossedEndBound(g_vec_pGameObjects);
-		//pPhysics->seek(g_vec_pGameObjects[4], g_vec_pGameObjects[5], deltaTime);
-		pPhysics->aiMotion(g_vec_pGameObjects[4], g_vec_pGameObjects[5], deltaTime);
-		//pPhysics->pursue(g_vec_pGameObjects[4], g_vec_pGameObjects[5], deltaTime);
-		pPhysics->aiMotion(g_vec_pGameObjects[4], g_vec_pGameObjects[6], deltaTime);
-		pPhysics->aiMotion(g_vec_pGameObjects[4], g_vec_pGameObjects[7], deltaTime);
-		pPhysics->aiMotion(g_vec_pGameObjects[4], g_vec_pGameObjects[8], deltaTime);
-		pPhysics->aiMotion(g_vec_pGameObjects[4], g_vec_pGameObjects[9], deltaTime);
-		pPhysics->aiMotion(g_vec_pGameObjects[4], g_vec_pGameObjects[10], deltaTime);
-		pPhysics->aiMotion(g_vec_pGameObjects[4], g_vec_pGameObjects[11], deltaTime);
+		pPhysics->respawnEnemy(g_vec_pGameObjects);
+		pPhysics->aiMotion2(g_vec_pGameObjects[4], g_vec_pGameObjects[5], deltaTime);
+		pPhysics->aiMotion3(g_vec_pGameObjects[4], g_vec_pGameObjects[6], deltaTime);
+		pPhysics->aiMotion3(g_vec_pGameObjects[4], g_vec_pGameObjects[7], deltaTime);
+		pPhysics->aiMotion1(g_vec_pGameObjects[4], g_vec_pGameObjects[8], deltaTime);
+		pPhysics->aiMotion1(g_vec_pGameObjects[4], g_vec_pGameObjects[9], deltaTime);
+		pPhysics->aiMotion1(g_vec_pGameObjects[4], g_vec_pGameObjects[10], deltaTime);
+		pPhysics->aiMotion1(g_vec_pGameObjects[4], g_vec_pGameObjects[11], deltaTime);
 
 		
 		std::vector<cPhysics::wanderDetails> wanderPts;

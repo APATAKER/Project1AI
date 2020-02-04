@@ -72,8 +72,17 @@ public:
 	glm::vec4 specularColour;		// Colour of the HIGHLIGHT + Shininess
 	                                // RGB - colour
 	                                // 4th value (a or w) is the "power"
-	                                // 1.0 to 10,000.0f 
+	                                // 1.0 to 10,000.0f
 
+	enum eObjectType
+	{
+		PLAYER,
+		ENEMY,
+		OTHER,
+		BULLETP,
+		BULLETE// Everything else
+	};
+	eObjectType objectType;
 
 	cMesh GameObjectMesh;
 
@@ -81,6 +90,7 @@ public:
 	glm::vec3 velocity;
 	glm::vec3 accel;
 
+	float collision_radius;
 	bool bulletFired;
 	bool isDead;
 

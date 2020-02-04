@@ -126,11 +126,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 				bullet->bulletFired = true;
 				//bullet->MoveInRelativeDirection(player->m_at);
 			}
-			/*else
+			else
 			{
 				bullet = findGameObjectByFriendlyName(g_vec_pGameObjects, "bullet2");
 				bullet->bulletFired = true;
-			}*/
+			}
 			
 		}
 		if(key == GLFW_KEY_Q && action == GLFW_PRESS)

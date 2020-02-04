@@ -69,6 +69,10 @@ public:
 	void bulletHolder(std::vector<cGameObject*>& vec_pGameObjects);
 
 	void bulletShoot(std::vector<cGameObject*>& vec_pGameObjects);
+	void bulletShoot(cGameObject* enemyobj);
+	int DeadEnemyCalu(std::vector<cGameObject*>& vec_pGameObjects);
+
+	void respawnEnemy(std::vector<cGameObject*>& vec_pGameObjects);
 	
 	
 
@@ -123,6 +127,8 @@ public:
 	void seek(glm::vec3 targetPos, cGameObject* aiObj, double deltatime);
 
 	void pursue(cGameObject* target, cGameObject* aiObj, double deltatime);
+
+	void evade(cGameObject* target, cGameObject* aiObj, double deltatime);
 	
 	
 	void wander(int& flag,std::vector<wanderDetails> wanderPts, cGameObject* aiObj, double deltatime);
@@ -136,7 +142,10 @@ public:
 		glm::vec3 const& lookTo,
 		glm::vec3 const& up);
 
-	void aiMotion(cGameObject* target, cGameObject* aiObj, double deltatime);
+	void aiMotion1(cGameObject* target, cGameObject* aiObj, double deltatime);
+	void aiMotion2(cGameObject* target, cGameObject* aiObj, double deltatime);
+	void aiMotion3(cGameObject* target, cGameObject* aiObj, double deltatime);
+
 	
 
 

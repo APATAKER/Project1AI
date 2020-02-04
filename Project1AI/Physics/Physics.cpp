@@ -1,6 +1,6 @@
 #include "Physics.h"
-
 extern cGameObject* findGameObjectByFriendlyName(std::vector<cGameObject*> vGameObjects, std::string friendlyname);
+extern std::vector<cGameObject*> g_vec_pGameObjects;
 
 cPhysics::cPhysics()
 {
@@ -91,6 +91,12 @@ void cPhysics::bulletHolder(std::vector<cGameObject*>& vec_pGameObjects)
 			if(!vec_pGameObjects[i]->bulletFired)
 			vec_pGameObjects[i]->positionXYZ = vec_pGameObjects[4]->positionXYZ + glm::vec3(0,0,0);
 		}
+
+		if(vec_pGameObjects[i]->friendlyName == "bulletEnemy")
+		{
+			if (!vec_pGameObjects[i]->bulletFired)
+				vec_pGameObjects[i]->positionXYZ = vec_pGameObjects[5]->positionXYZ;
+		}
 	}
 }
 
@@ -108,6 +114,50 @@ void cPhysics::bulletShoot(std::vector<cGameObject*>& vec_pGameObjects)
 		}
 	}
 }
+
+void cPhysics::bulletShoot(cGameObject* enemyobj)
+{
+	cGameObject* enemyBullet = findGameObjectByFriendlyName(g_vec_pGameObjects, "bulletEnemy");
+
+	//enemyBullet->bulletFired = true;
+	//enemyBullet->positionXYZ = enemyobj->positionXYZ;
+	if (enemyBullet->bulletFired)
+	{
+		enemyBullet->MoveInRelativeDirection(enemyobj->m_at);
+	}
+	
+}
+
+int cPhysics::DeadEnemyCalu(std::vector<cGameObject*>& vec_pGameObjects)
+{
+	int totaldeadenemy =0;
+	for(int i = 0 ;i<vec_pGameObjects.size();i++)
+	{
+		if(vec_pGameObjects[i]->objectType == cGameObject::ENEMY)
+		{
+			if(vec_pGameObjects[i]->isDead == true)
+			{
+				totaldeadenemy++;
+			}
+		}
+	}
+	return totaldeadenemy;
+}
+
+void cPhysics::respawnEnemy(std::vector<cGameObject*>& vec_pGameObjects)
+{
+	if(DeadEnemyCalu(vec_pGameObjects) >4)
+	{
+		for(int i =0;i<vec_pGameObjects.size();i++)
+		{
+			if(vec_pGameObjects[i]->objectType == cGameObject::ENEMY)
+			{
+				vec_pGameObjects[i]->isVisible = true;
+			}
+		}
+	}
+}
+
 
 
 void cPhysics::setGravity(glm::vec3 newGravityValue)
@@ -284,6 +334,9 @@ void cPhysics::CheckIfCrossedEndBound(std::vector<cGameObject*>& vec_pGameObject
 			if (vec_pGameObjects[index]->friendlyName == "enemy1")
 			{
 				vec_pGameObjects[index]->isVisible = false;
+				cGameObject* enemybullet = findGameObjectByFriendlyName(g_vec_pGameObjects, "bulletEnemy");
+				enemybullet->positionXYZ = glm::vec3(0, -10, 0);
+				enemybullet->bulletFired = false;
 			}
 			if (vec_pGameObjects[index]->friendlyName == "enemy2")
 			{
@@ -381,36 +434,8 @@ void cPhysics::TestForCollisions(std::vector<cGameObject*>& vec_pGameObjects)
 bool cPhysics::DoSphereSphereCollisionTest(cGameObject* pA, cGameObject* pB,
 	sCollisionInfo& collisionInfo)
 {
-	////new code
-	//glm::vec3 U1x, U1y, U2x, U2y, V1x, V1y, V2x, V2y;
-
-	//float m1, m2, x1, x2;
-	//glm::vec3 v1temp, v1, v2, v1x, v2x, v1y, v2y, x(pA->positionXYZ - pB->positionXYZ);
-
-	//glm::normalize(x);
-	//v1 = pA->velocity;
-	//x1 = dot(x, v1);
-	//v1x = x * x1;
-	//v1y = v1 - v1x;
-	//m1 = 1.0f; //mass of 1
-
-	//x = x * -1.0f;
-	//v2 = pB->velocity;
-	//x2 = dot(x, v2);
-	//v2x = x * x2;
-	//v2y = v2 - v2x;
-	//m2 = 1.0f; //mass of 1
 
 	//	//new code
-
-
-	sPhysicsTriangle closestTriangle;
-
-	GetClosestTriangleToPoint(pA->positionXYZ, pB->GameObjectMesh, collisionInfo.closestPoint, closestTriangle);
-
-	glm::vec3 centreOfTriangle = (closestTriangle.verts[0] +
-		closestTriangle.verts[1] +
-		closestTriangle.verts[2]) / 3.0f;		// Average
 
 	float distanceBetweenSpheres = glm::length(pA->positionXYZ - pB->positionXYZ);
 
@@ -421,61 +446,45 @@ bool cPhysics::DoSphereSphereCollisionTest(cGameObject* pA, cGameObject* pB,
 		prevPositionA = pA->positionXYZ;
 		prevPositionB = pB->positionXYZ;	
 	}
-	float distance = glm::length(pA->positionXYZ - collisionInfo.closestPoint);
 
 	if (/*distance <= pA->SPHERE_radius*/distanceBetweenSpheres <= (pA->SPHERE_radius +pB->SPHERE_radius))
 	{
-		pA->velocity = glm::vec3(0);
-		pB->velocity = glm::vec3(0);
 
-		if(pA->friendlyName == "player")
+		if(!pA->objectType == cGameObject::ENEMY)
 		{
-			if (pB->friendlyName == "enemy1")
+			if(!pB->objectType == cGameObject::ENEMY)
 			{
-				pB->isDead = true;
-				pA->isDead = true;
+				pA->velocity = glm::vec3(0);
+				pB->velocity = glm::vec3(0);
+				
 			}
-			if (pB->friendlyName == "enemy2")
-			{
-				pB->isDead = true;
-				pA->isDead = true;
-			}
-			if (pB->friendlyName == "enemy3")
-			{
-				pB->isDead = true;
-				pA->isDead = true;
-			}
-			if (pB->friendlyName == "enemy4")
-			{
-				pB->isDead = true;
-				pA->isDead = true;
-			}
-			if (pB->friendlyName == "enemy5")
-			{
-				pB->isDead = true;
-				pA->isDead = true;
-			}
-			if (pB->friendlyName == "enemy6")
-			{
-				pB->isDead = true;
-				pA->isDead = true;
-			}
-			if (pB->friendlyName == "enemy7")
-			{
-				pB->isDead = true;
-				pA->isDead = true;
-			}
-			if (pB->friendlyName == "enemy8")
-			{
-				pB->isDead = true;
-				pA->isDead = true;
-			}
-			if (pB->friendlyName == "enemy9")
+		}
+		
+		if (pA->objectType == cGameObject::PLAYER)
+		{
+			if (pB->objectType == cGameObject::ENEMY)
 			{
 				pB->isDead = true;
 				pA->isDead = true;
 			}
 		}
+
+		if(pA->objectType == cGameObject::PLAYER)
+		{
+			if(pB->objectType == cGameObject::BULLETE)
+			{
+				pA->isDead = true;
+			}
+		}
+
+		if(pA->objectType == cGameObject::ENEMY)
+		{
+			if(pB->objectType == cGameObject::BULLETP)
+			{
+				pA->isDead = true;
+			}
+		}
+		
 
 		return true;
 	}
@@ -667,8 +676,46 @@ void cPhysics::pursue(cGameObject* target, cGameObject* aiObj, double deltatime)
 		aiObj->velocity = glm::normalize(aiObj->velocity) * maxVelocity;
 	}
 }
+void cPhysics::evade(cGameObject* target, cGameObject* aiObj, double deltatime)
+{
+	//calculate the number of frames we are looking ahead
+	glm::vec3 distance = target->positionXYZ - aiObj->positionXYZ;
+	int T = (int)glm::length(distance) / (int)maxVelocity;
+
+	glm::vec3 frame = glm::vec3(T);
+	//the future target point the vehicle will pursue towards
+	glm::vec3 futurePosition = target->positionXYZ + target->velocity * frame;
+
+	/*calculates the desired velocity */
+	glm::vec3 desiredVelocity =  aiObj->positionXYZ - futurePosition;
+
+	float dist = desiredVelocity.length();
+
+	//desiredVelocity = glm::normalize(desiredVelocity);
+	//desiredVelocity.Normalize();
+	glm::vec3 direction = glm::normalize(desiredVelocity);
+
+	desiredVelocity = direction * maxVelocity;
+	
+
+	/*calculate the steering force */
+	glm::vec3 steer = desiredVelocity - aiObj->velocity;
+
+	/* add steering force to current velocity*/
+	aiObj->velocity += steer * (float)deltatime;
+
+	if (aiObj->velocity.length() > maxVelocity)
+	{
+
+		aiObj->velocity = glm::normalize(aiObj->velocity) * maxVelocity;
+	}
+}
 void cPhysics::wander(int& flag,std::vector<wanderDetails> wanderPts, cGameObject* aiObj, double deltatime)
 {
+	cGameObject* player = findGameObjectByFriendlyName(g_vec_pGameObjects, "player");
+	glm::quat directionToFaceThePlayer = safeQuatLookAt(player->positionXYZ, aiObj->positionXYZ, glm::vec3(0, 1, 0));
+	aiObj->setOrientation(directionToFaceThePlayer);
+	aiObj->getCurrentDirection();
 	//auto flag = 0;
 	if (flag == 0)
 	{
@@ -750,7 +797,7 @@ glm::quat cPhysics::safeQuatLookAt(glm::vec3 const& lookFrom, glm::vec3 const& l
 	
 }
 
-void cPhysics::aiMotion(cGameObject* target, cGameObject* aiObj, double deltatime)
+void cPhysics::aiMotion1(cGameObject* target, cGameObject* aiObj, double deltatime)
 {
 	glm::quat directionToFaceThePlayer = safeQuatLookAt(target->positionXYZ, aiObj->positionXYZ, glm::vec3(0, 1, 0));
 	aiObj->setOrientation(directionToFaceThePlayer);
@@ -770,7 +817,57 @@ void cPhysics::aiMotion(cGameObject* target, cGameObject* aiObj, double deltatim
 		  flee(target, aiObj, deltatime);
 	}
 	
+	
 }
+
+void cPhysics::aiMotion2(cGameObject* target, cGameObject* aiObj, double deltatime)
+{
+	glm::quat directionToFaceThePlayer = safeQuatLookAt(target->positionXYZ, aiObj->positionXYZ, glm::vec3(0, 1, 0));
+	aiObj->setOrientation(directionToFaceThePlayer);
+	aiObj->getCurrentDirection();
+
+	glm::quat playerDirection = target->getQOrientation();
+	//flee(target, aiObj, deltatime);
+
+	//float iflookateachother = glm::dot(target->m_at, aiObj->m_at);
+
+	pursue(target, aiObj, deltatime);
+	cGameObject* bullet = findGameObjectByFriendlyName(g_vec_pGameObjects, "bullet1");
+
+	float approachRegion = glm::length(bullet->positionXYZ - aiObj->positionXYZ);
+	if (approachRegion < (bullet->SPHERE_radius + aiObj->collision_radius))
+	{
+		cGameObject* enemybullet = findGameObjectByFriendlyName(g_vec_pGameObjects, "bulletEnemy");
+		enemybullet->bulletFired = true;
+		bulletShoot(aiObj);
+		evade(target, aiObj, deltatime);
+	}
+}
+
+void cPhysics::aiMotion3(cGameObject* target, cGameObject* aiObj, double deltatime)
+{
+	glm::quat directionToFaceThePlayer = safeQuatLookAt(target->positionXYZ, aiObj->positionXYZ, glm::vec3(0, 1, 0));
+	aiObj->setOrientation(directionToFaceThePlayer);
+	aiObj->getCurrentDirection();
+
+	seek(target, aiObj, deltatime);
+	pursue(target, aiObj, deltatime);
+
+	for(int i =0;i<g_vec_pGameObjects.size();i++)
+	{
+		if(g_vec_pGameObjects[i]->objectType == cGameObject::BULLETP)
+		{
+			if (g_vec_pGameObjects[i]->bulletFired)
+			{
+				float distBetBullet = glm::distance(g_vec_pGameObjects[i]->positionXYZ, aiObj->positionXYZ);
+				if (distBetBullet < 30.0f)
+					evade(target, aiObj, deltatime);
+			}
+		}
+	}
+}
+
+
 
 cPhysics::wanderDetails::wanderDetails(glm::vec3 wanderPt, float radius)
 {
