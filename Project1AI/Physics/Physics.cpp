@@ -153,6 +153,7 @@ void cPhysics::respawnEnemy(std::vector<cGameObject*>& vec_pGameObjects)
 			if(vec_pGameObjects[i]->objectType == cGameObject::ENEMY)
 			{
 				vec_pGameObjects[i]->isVisible = true;
+				vec_pGameObjects[i]->isDead = false;
 			}
 		}
 	}
