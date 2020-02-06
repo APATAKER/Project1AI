@@ -1,5 +1,5 @@
 #pragma once
-#include <game_math.h>
+#include <glm/glm.hpp>
 #include "eComponentType.h"
 
 namespace nPhysics
